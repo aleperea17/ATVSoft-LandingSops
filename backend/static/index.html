@@ -492,20 +492,21 @@
   }
 
   function mensajeWhatsApp(){
+    // Lo escribe el lead, así que va en primera persona y todo en mayúscula.
     var lineas = [
-      'Hola! Quiero reclamar mi recurso.',
+      'Buenass, vengo a reclamar mi recurso',
       '',
-      'Palabra clave: ' + (validatedCode || '—').toLowerCase(),
+      'Palabra clave: ' + (validatedCode || '—'),
       'Nombre: ' + (answers.nombre || '—'),
       'Teléfono: ' + (answers.telefono || '—'),
       'Email: ' + (answers.email || '—'),
       'Instagram: ' + (answers.instagram || '—'),
-      '¿Atrae clientes con su contenido?: ' + (answers.atrae_clientes || '—'),
-      'Perfil: ' + (answers.perfil || '—'),
-      'Cuello de botella: ' + (answers.cuello || '—')
+      'Atraigo clientes con mi contenido: ' + (answers.atrae_clientes || '—'),
+      'Mi perfil: ' + (answers.perfil || '—'),
+      'Mi cuello de botella: ' + (answers.cuello || '—')
     ];
     if (slug) lineas.push('Origen: ' + slug);
-    return lineas.join('\n');
+    return lineas.join('\n').toUpperCase();
   }
 
   // Si todavía no cargaron la imagen del recurso, el popup igual funciona.
