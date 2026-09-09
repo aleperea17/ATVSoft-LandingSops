@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel — SOPs Landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0607; --card: #140d0e; --card-border: rgba(255,255,255,0.08);
+    --red: #e11d3a; --text: #f5f1f0; --text-muted: #9c9192; --input-bg: #1a1112;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 26px; font-weight: 900; margin: 0 0 24px; }
+  .gate {
+    max-width: 380px; margin: 80px auto; background: var(--card);
+    border: 1px solid var(--card-border); border-radius: 16px; padding: 32px;
+    text-align: center;
+  }
+  .gate input {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--card-border);
+    border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: inherit;
+    font-size: 14px; margin: 16px 0; outline: none;
+  }
+  .gate input:focus { border-color: var(--red); }
+  button {
+    background: var(--red); color: #fff; border: none; border-radius: 999px;
+    padding: 12px 22px; font-weight: 700; font-family: inherit; cursor: pointer; font-size: 14px;
+  }
+  button:hover { background: #c81730; }
+  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+  th, td {
+    text-align: left; padding: 12px 14px; font-size: 13.5px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
+  tr.slug-row { cursor: pointer; }
+  tr.slug-row:hover { background: rgba(255,255,255,0.02); }
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 8px 20px; margin-bottom: 20px; }
+  .error { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
+  .error.show { display: block; }
+  .back-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); margin-bottom: 16px; }
+  .empty { color: var(--text-muted); font-size: 13.5px; padding: 20px 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h1 style="font-size:18px;">Panel de leads</h1>
+    <p style="color:var(--text-muted); font-size:13px;">Ingresá la clave de acceso al panel.</p>
+    <input type="password" id="password" placeholder="Clave del panel" />
+    <div class="error" id="gate-error">Clave incorrecta.</div>
+    <button id="btn-enter">Entrar</button>
+  </div>
+
+  <div id="dashboard" style="display:none;">
+    <div id="view-summary">
+      <h1>Leads por SOP</h1>
+      <div class="card"><table id="table-summary"></table></div>
+    </div>
+
+    <div id="view-detail" style="display:none;">
+      <button class="back-btn" id="btn-back-detail">← Volver</button>
+      <h1 id="detail-title">Detalle</h1>
+      <div class="card"><table id="table-detail"></table></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const API_BASE = window.location.origin;
+  let dashboardKey = '';
+
+  document.getElementById('btn-enter').addEventListener('click', enter);
+  document.getElementById('password').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') enter();
+  });
+
+  async function enter() {
+    const pw = document.getElementById('password').value;
+    const res = await fetch(`${API_BASE}/api/dashboard/summary?key=${encodeURIComponent(pw)}`);
+    if (!res.ok) {
+      document.getElementById('gate-error').classList.add('show');
+      return;
+    }
+    dashboardKey = pw;
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    const data = await res.json();
+    renderSummary(data);
+  }
+
+  function renderSummary(rows) {
+    const table = document.getElementById('table-summary');
+    if (rows.length === 0) {
+      table.innerHTML = '<tr><td class="empty">Todavía no hay leads.</td></tr>';
+      return;
+    }
+    let html = '<tr><th>Slug (SOP)</th><th>Total leads</th><th>Con clave usada</th></tr>';
+    rows.forEach(r => {
+      html += `<tr class="slug-row" data-slug="${r.slug}">
+        <td>${r.slug}</td><td>${r.total}</td><td>${r.con_clave}</td>
+      </tr>`;
+    });
+    table.innerHTML = html;
+    table.querySelectorAll('.slug-row').forEach(row => {
+      row.addEventListener('click', () => showDetail(row.dataset.slug));
+    });
+  }
+
+  async function showDetail(slug) {
+    const res = await fetch(`${API_BASE}/api/dashboard/leads?key=${encodeURIComponent(dashboardKey)}&slug=${encodeURIComponent(slug)}`);
+    const rows = await res.json();
+    document.getElementById('view-summary').style.display = 'none';
+    document.getElementById('view-detail').style.display = 'block';
+    document.getElementById('detail-title').textContent = `Leads — ${slug}`;
+
+    const table = document.getElementById('table-detail');
+    if (rows.length === 0) {
+      table.innerHTML = '<tr><td class="empty">Sin leads en este slug.</td></tr>';
+      return;
+    }
+    let html = '<tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Instagram</th><th>Clave</th><th>Fecha</th></tr>';
+    rows.forEach(r => {
+      html += `<tr>
+        <td>${r.nombre}</td><td>${r.email}</td><td>${r.telefono}</td>
+        <td>${r.instagram}</td><td>${r.codigo_usado || '—'}</td><td>${r.created_at}</td>
+      </tr>`;
+    });
+    table.innerHTML = html;
+  }
+
+  document.getElementById('btn-back-detail').addEventListener('click', () => {
+    document.getElementById('view-detail').style.display = 'none';
+    document.getElementById('view-summary').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>

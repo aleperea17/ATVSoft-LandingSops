@@ -1,0 +1,9 @@
+services:
+  backend:
+    build: ./backend
+    container_name: sops-landing
+    restart: unless-stopped
+    ports:
+      - "8010:8000"
+    volumes:
+      - ./backend/data:/app/data
