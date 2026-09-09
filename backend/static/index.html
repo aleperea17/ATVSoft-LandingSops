@@ -505,7 +505,7 @@
       'Mi perfil: ' + (answers.perfil || '—'),
       'Mi cuello de botella: ' + (answers.cuello || '—')
     ];
-    if (slug) lineas.push('Origen: ' + slug);
+    // El slug no va en el mensaje: se guarda en la base y se ve en el panel.
     return lineas.join('\n').toUpperCase();
   }
 
