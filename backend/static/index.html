@@ -23,11 +23,13 @@
     margin:0; color:var(--text); overflow-x:hidden;
     font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
     -webkit-font-smoothing:antialiased;
-    background-color:#0a0505;
+    background-color:#0d0607;
     background-image:
-      radial-gradient(ellipse 115% 95% at 50% 45%, transparent 35%, rgba(0,0,0,.48) 100%),
-      radial-gradient(ellipse 85% 60% at 50% 42%, rgba(70,32,32,.36) 0%, rgba(52,22,22,.12) 45%, transparent 72%),
-      radial-gradient(ellipse 95% 75% at 50% 38%, rgba(52,22,22,.88) 0%, rgba(20,10,10,.96) 48%, #000 100%);
+      radial-gradient(ellipse 125% 105% at 50% 50%, transparent 42%, rgba(0,0,0,.52) 100%),
+      radial-gradient(ellipse 62% 48% at 16% 10%, rgba(214,46,72,.30) 0%, transparent 64%),
+      radial-gradient(ellipse 58% 50% at 88% 90%, rgba(168,28,52,.26) 0%, transparent 62%),
+      radial-gradient(ellipse 70% 46% at 78% 14%, rgba(122,34,86,.18) 0%, transparent 60%),
+      radial-gradient(ellipse 95% 72% at 50% 44%, rgba(122,44,46,.62) 0%, rgba(46,19,21,.92) 50%, #0a0506 100%);
     background-attachment:fixed;
   }
   button,input,select{font-family:inherit}
@@ -45,13 +47,13 @@
 
   /* filo metálico + tarjeta del sistema ATV */
   .edge{
-    width:100%; max-width:440px; padding:1px; border-radius:19px;
+    width:100%; max-width:530px; padding:1px; border-radius:22px;
     background:linear-gradient(157deg, rgba(255,255,255,.20), rgba(230,57,70,.28) 32%, rgba(255,255,255,.03) 62%, rgba(255,255,255,.09));
     box-shadow:0 8px 40px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.4);
   }
   .shell-card{
-    position:relative; background:var(--card); border-radius:18px; overflow:hidden;
-    padding:26px 26px 24px;
+    position:relative; background:var(--card); border-radius:21px; overflow:hidden;
+    padding:34px 34px 30px;
     box-shadow:0 0 0 1px rgba(230,57,70,.08) inset, inset 0 1px 0 rgba(255,255,255,.05);
   }
   .shell-card::before{
@@ -68,31 +70,32 @@
   .micro{font-size:9.5px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--faint)}
   .count{font-variant-numeric:tabular-nums; color:var(--muted)}
 
-  .ticks{display:flex; gap:4px; margin-top:16px}
+  .ticks{display:flex; gap:5px; margin-top:18px}
   .tick{height:2px; flex:1; border-radius:2px; background:rgba(255,255,255,.09); transition:background .35s, box-shadow .35s}
   .tick.done{background:rgba(230,57,70,.45)}
   .tick.now{background:var(--red); box-shadow:0 0 10px rgba(230,57,70,.65)}
 
-  .q{margin:26px 0 0; font-size:21px; font-weight:700; letter-spacing:-.022em; line-height:1.26; text-wrap:balance}
-  .hint{margin:8px 0 0; font-size:12.5px; line-height:1.5; color:var(--faint)}
-  .fields{margin-top:20px}
+  .q{margin:30px 0 0; font-size:24px; font-weight:700; letter-spacing:-.022em; line-height:1.26; text-wrap:balance}
+  .hint{margin:9px 0 0; font-size:13.5px; line-height:1.5; color:var(--faint)}
+  .fields{margin-top:24px}
 
   .field{
-    width:100%; padding:14px 16px; background:rgba(0,0,0,.32); border:1px solid var(--line);
-    border-radius:12px; color:var(--text); font-size:15px; outline:none;
+    width:100%; padding:16px 18px; background:rgba(0,0,0,.32); border:1px solid var(--line);
+    border-radius:13px; color:var(--text); font-size:16px; outline:none;
     transition:border-color .18s, background .18s, box-shadow .18s;
   }
   .field::placeholder{color:var(--faint)}
   .field:focus{border-color:rgba(230,57,70,.5); background:rgba(0,0,0,.45); box-shadow:0 0 0 3px rgba(230,57,70,.08)}
-  .phone{display:grid; grid-template-columns:106px 1fr; gap:9px}
+  .phone{display:grid; grid-template-columns:112px 1fr; gap:10px}
+  .split2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   select.field{appearance:none; cursor:pointer; padding-right:12px}
   select.field option{background:#161010; color:var(--text)}
 
   .opts{border:1px solid var(--line); border-radius:13px; overflow:hidden; background:rgba(0,0,0,.22)}
   .opt{
-    display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:13px 15px;
+    display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:15px 17px;
     background:transparent; border:none; border-bottom:1px solid var(--line); color:var(--text);
-    font-size:14px; font-weight:400; cursor:pointer; position:relative; transition:background .16s;
+    font-size:15px; font-weight:400; cursor:pointer; position:relative; transition:background .16s;
   }
   .opt:last-child{border-bottom:none}
   .opt::before{content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--red); transform:scaleY(0); transition:transform .18s}
@@ -107,9 +110,9 @@
   .err{display:none; margin-top:12px; font-size:12.5px; line-height:1.45; color:var(--red-hot)}
   .err.show{display:block}
 
-  .row{display:flex; gap:9px; margin-top:20px}
+  .row{display:flex; gap:10px; margin-top:24px}
   .go{
-    flex:1; padding:15px 20px; border:none; border-radius:12px; font-size:14px; font-weight:700;
+    flex:1; padding:17px 22px; border:none; border-radius:13px; font-size:15px; font-weight:700;
     color:#fff; cursor:pointer; background:linear-gradient(180deg,#F02744,var(--red-deep));
     box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 10px 30px rgba(230,57,70,.26);
     transition:transform .16s, box-shadow .16s, filter .16s;
@@ -117,18 +120,18 @@
   .go:hover:not(:disabled){transform:translateY(-1px); filter:brightness(1.06); box-shadow:0 1px 0 rgba(255,255,255,.24) inset, 0 14px 38px rgba(230,57,70,.36)}
   .go:disabled{opacity:.6; cursor:default}
   .prev{
-    flex:none; padding:15px 17px; border-radius:12px; background:transparent; border:1px solid var(--line);
-    color:var(--muted); font-size:14px; cursor:pointer; transition:color .16s, border-color .16s;
+    flex:none; padding:17px 19px; border-radius:13px; background:transparent; border:1px solid var(--line);
+    color:var(--muted); font-size:15px; cursor:pointer; transition:color .16s, border-color .16s;
   }
   .prev:hover{color:var(--text); border-color:var(--line-2)}
-  .fine{margin:15px 0 0; font-size:10.5px; line-height:1.5; color:var(--faint); text-align:center}
+  .fine{margin:17px 0 0; font-size:11px; line-height:1.5; color:var(--faint); text-align:center}
 
   .done{
     position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; padding:24px;
     background:rgba(6,4,4,.86); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
   }
   .done.show{display:flex}
-  .done .edge{max-width:420px}
+  .done .edge{max-width:470px}
   .done .shell-card{padding:34px 30px 30px; text-align:center}
   .seal{
     width:52px; height:52px; margin:0 auto 20px; border-radius:15px; display:flex; align-items:center; justify-content:center;
@@ -158,7 +161,7 @@
   .peek-lock span{
     font-size:9.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.8);
   }
-  .done h2{margin:0; font-size:25px; font-weight:800; letter-spacing:-.03em; line-height:1.18}
+  .done h2{margin:0; font-size:27px; font-weight:800; letter-spacing:-.03em; line-height:1.18}
   .done h2 em{font-style:normal; color:var(--red-hot)}
   .done p{margin:11px 0 0; font-size:13.5px; line-height:1.55; color:var(--muted)}
   .wa{
@@ -238,7 +241,7 @@
   var STEPS = [
     { k:'codigo', t:'text', q:'Ingresá tu palabra clave', ph:'Escribí la palabra',
       hint:'Es la palabra que te dimos en el video.', fine:'La palabra no distingue mayúsculas.' },
-    { k:'nombre', t:'text', q:'¿Cuál es tu nombre completo?', ph:'Nombre y apellido' },
+    { k:'nombre', t:'name', q:'¿Cuál es tu nombre completo?' },
     { k:'telefono', t:'tel', q:'¿Cuál es tu número de teléfono?', hint:'Ahí te mandamos los SOPs.' },
     { k:'email', t:'email', q:'¿Cuál es tu email?', ph:'tu@email.com' },
     { k:'instagram', t:'text', q:'¿Cuál es tu usuario de Instagram?', ph:'@tu_usuario' },
@@ -288,7 +291,12 @@
     if (s.hint) h += '<p class="hint">' + s.hint + '</p>';
     h += '<div class="fields">';
 
-    if (s.t === 'choice') {
+    if (s.t === 'name') {
+      h += '<div class="split2">' +
+        '<input class="field" id="f" type="text" placeholder="Nombre" autocomplete="given-name" value="' + esc(answers._nombre || '') + '">' +
+        '<input class="field" id="f2" type="text" placeholder="Apellido" autocomplete="family-name" value="' + esc(answers._apellido || '') + '">' +
+      '</div>';
+    } else if (s.t === 'choice') {
       h += '<div class="opts">' + s.o.map(function(o){
         return '<button type="button" class="opt' + (answers[s.k] === o ? ' on' : '') + '" data-o="' + esc(o) + '">' +
                '<span class="box"><i></i></span>' + esc(o) + '</button>';
@@ -306,6 +314,12 @@
     body.innerHTML = h + '</div>';
 
     var f = document.getElementById('f');
+    var f2 = document.getElementById('f2');
+    if (f2) {
+      f2.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); advance(); }
+      });
+    }
     if (f) {
       f.focus({ preventScroll: true });
       f.addEventListener('keydown', function(e){
@@ -337,6 +351,15 @@
 
     if (s.t === 'choice') {
       if (!answers[s.k]) return fail('Elegí una opción para continuar.');
+    } else if (s.t === 'name') {
+      var nom = document.getElementById('f').value.trim();
+      var ape = document.getElementById('f2').value.trim();
+      if (!nom && !ape) return fail('Completá tu nombre y tu apellido para continuar.');
+      if (!nom) return fail('Falta tu nombre.');
+      if (!ape) return fail('Falta tu apellido.');
+      answers._nombre = nom;
+      answers._apellido = ape;
+      answers[s.k] = nom + ' ' + ape;   // se guardan juntos en un solo campo
     } else if (s.t === 'tel') {
       var num = document.getElementById('f').value.trim();
       if (!num) return fail('Completá tu número para continuar.');

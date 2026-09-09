@@ -5,194 +5,423 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="icon" type="image/png" href="/static/favicon.png" />
 <link rel="apple-touch-icon" href="/static/favicon.png" />
-<title>Panel — SOPs Landing</title>
+<title>Panel de leads — Aumenta Tu Valor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0607; --card: #140d0e; --card-border: rgba(255,255,255,0.08);
-    --red: #e11d3a; --text: #f5f1f0; --text-muted: #9c9192; --input-bg: #1a1112;
+  :root{
+    --card:rgba(18,18,18,.95);
+    --line:rgba(255,255,255,.07);
+    --line-2:rgba(255,255,255,.14);
+    --red:#E63946; --red-hot:#FF5F6D; --red-deep:#B21230;
+    --text:#F7F4F4; --muted:#968C8E; --faint:#5E5456;
   }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--text);
-    font-family: 'Poppins', -apple-system, sans-serif; min-height: 100vh;
-    padding: 40px 20px;
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text); font-size:14px;
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background-color:#0d0607;
+    background-image:
+      radial-gradient(ellipse 125% 105% at 50% 50%, transparent 42%, rgba(0,0,0,.52) 100%),
+      radial-gradient(ellipse 62% 48% at 16% 10%, rgba(214,46,72,.22) 0%, transparent 64%),
+      radial-gradient(ellipse 58% 50% at 88% 90%, rgba(168,28,52,.20) 0%, transparent 62%),
+      radial-gradient(ellipse 95% 72% at 50% 44%, rgba(122,44,46,.42) 0%, rgba(46,19,21,.90) 50%, #0a0506 100%);
+    background-attachment:fixed;
   }
-  .wrap { max-width: 900px; margin: 0 auto; }
-  h1 { font-size: 26px; font-weight: 900; margin: 0 0 24px; }
-  .gate {
-    max-width: 380px; margin: 80px auto; background: var(--card);
-    border: 1px solid var(--card-border); border-radius: 16px; padding: 32px;
-    text-align: center;
+  button,input,select{font-family:inherit}
+  :focus-visible{outline:1.5px solid var(--red-hot); outline-offset:2px}
+
+  .shell{max-width:1560px; margin:0 auto; padding:26px 26px 60px}
+
+  /* ── barra superior ── */
+  .top{display:flex; align-items:center; justify-content:space-between; gap:20px; margin-bottom:26px}
+  .logo{height:40px; width:auto; display:block}
+  .who{display:flex; align-items:center; gap:10px}
+  .ghost{
+    display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:11px;
+    background:rgba(255,255,255,.04); border:1px solid var(--line); color:var(--muted);
+    font-size:13px; font-weight:500; cursor:pointer; transition:color .15s, border-color .15s;
   }
-  .gate input {
-    width: 100%; background: var(--input-bg); border: 1px solid var(--card-border);
-    border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: inherit;
-    font-size: 14px; margin: 16px 0; outline: none;
+  .ghost:hover{color:var(--text); border-color:var(--line-2)}
+
+  /* ── tarjeta base ── */
+  .card{
+    position:relative; background:var(--card); border:1px solid var(--line);
+    border-radius:16px; overflow:hidden;
+    box-shadow:0 0 0 1px rgba(230,57,70,.06) inset, 0 8px 34px rgba(0,0,0,.5);
   }
-  .gate input:focus { border-color: var(--red); }
-  button {
-    background: var(--red); color: #fff; border: none; border-radius: 999px;
-    padding: 12px 22px; font-weight: 700; font-family: inherit; cursor: pointer; font-size: 14px;
+
+  /* ── tiles ── */
+  .tiles{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-bottom:16px}
+  .tile{padding:18px 20px 20px}
+  .tile-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px}
+  .tile-label{font-size:9.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); line-height:1.5}
+  .tile-ico{color:rgba(230,57,70,.55); flex:none; margin-top:1px}
+  .tile-val{margin-top:12px; font-size:34px; font-weight:800; letter-spacing:-.035em; line-height:1; font-variant-numeric:tabular-nums}
+  .tile-val.rojo{color:var(--red-hot)}
+  .tile-val.chico{font-size:22px; letter-spacing:-.02em}
+  .tile-sub{margin-top:8px; font-size:11.5px; color:var(--faint)}
+  .breakdown{margin-top:12px; display:flex; flex-direction:column; gap:6px}
+  .bd-row{display:flex; align-items:center; gap:9px; font-size:12px}
+  .bd-name{color:var(--muted); flex:none; width:88px; text-transform:capitalize}
+  .bd-bar{flex:1; height:5px; border-radius:3px; background:rgba(255,255,255,.06); overflow:hidden}
+  .bd-fill{height:100%; border-radius:3px; background:linear-gradient(90deg,var(--red-deep),var(--red))}
+  .bd-num{font-variant-numeric:tabular-nums; color:var(--text); font-weight:600; width:26px; text-align:right}
+
+  /* ── filtros ── */
+  .filters{padding:18px 20px; margin-bottom:16px}
+  .filter-grid{display:grid; grid-template-columns:minmax(220px,2.2fr) repeat(auto-fit,minmax(150px,1fr)); gap:12px; align-items:end}
+  .fld label{display:block; font-size:9.5px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; color:var(--faint); margin-bottom:7px}
+  .inp, .sel{
+    width:100%; padding:11px 13px; background:rgba(0,0,0,.34); border:1px solid var(--line);
+    border-radius:10px; color:var(--text); font-size:13.5px; outline:none;
+    transition:border-color .15s, background .15s;
   }
-  button:hover { background: #c81730; }
-  table { width: 100%; border-collapse: collapse; margin-top: 16px; }
-  th, td {
-    text-align: left; padding: 12px 14px; font-size: 13.5px;
-    border-bottom: 1px solid var(--card-border);
+  .inp::placeholder{color:var(--faint)}
+  .inp:focus, .sel:focus{border-color:rgba(230,57,70,.5); background:rgba(0,0,0,.46)}
+  .sel{appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23968C8E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 13px center; padding-right:32px}
+  .sel option{background:#161010; color:var(--text)}
+  .search{position:relative}
+  .search .inp{padding-left:36px}
+  .search svg{position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--faint); pointer-events:none}
+
+  .bar{display:flex; align-items:center; gap:14px; margin:16px 0 0; flex-wrap:wrap}
+  .bar-count{font-size:13px; color:var(--muted)}
+  .bar-count b{color:var(--text); font-weight:600; font-variant-numeric:tabular-nums}
+  .export{
+    display:inline-flex; align-items:center; gap:8px; padding:10px 17px; border:none; border-radius:11px;
+    background:linear-gradient(180deg,#F02744,var(--red-deep)); color:#fff; font-size:13px; font-weight:700;
+    cursor:pointer; box-shadow:0 1px 0 rgba(255,255,255,.2) inset, 0 8px 22px rgba(230,57,70,.22);
+    transition:filter .15s, transform .15s;
   }
-  th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.04em; }
-  tr.slug-row { cursor: pointer; }
-  tr.slug-row:hover { background: rgba(255,255,255,0.02); }
-  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 8px 20px; margin-bottom: 20px; }
-  .error { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
-  .error.show { display: block; }
-  .back-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); margin-bottom: 16px; }
-  .link-btn {
-    background: transparent; border: none; color: var(--text-muted); padding: 0;
-    font-size: 13px; font-weight: 500; margin-bottom: 4px;
+  .export:hover{filter:brightness(1.07); transform:translateY(-1px)}
+  .clear{background:none; border:none; color:var(--faint); font-size:12.5px; cursor:pointer; padding:0}
+  .clear:hover{color:var(--muted)}
+
+  /* ── tabla ── */
+  .table-wrap{overflow-x:auto}
+  table{width:100%; border-collapse:collapse; min-width:900px}
+  thead th{
+    text-align:left; padding:13px 16px; font-size:9.5px; font-weight:600; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--line); white-space:nowrap;
+    background:rgba(0,0,0,.22);
   }
-  .link-btn:hover { background: transparent; color: var(--text); }
-  .empty { color: var(--text-muted); font-size: 13.5px; padding: 20px 0; }
-  .clave {
-    display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px;
-    font-weight: 600; background: rgba(225,29,58,0.12); border: 1px solid rgba(225,29,58,0.28);
-    color: #ff5f74;
+  tbody td{padding:15px 16px; border-bottom:1px solid rgba(255,255,255,.045); vertical-align:middle}
+  tbody tr{position:relative; transition:background .15s}
+  tbody tr:hover{background:rgba(230,57,70,.045)}
+  tbody tr td:first-child{border-left:2px solid transparent}
+  tbody tr:hover td:first-child{border-left-color:var(--red)}
+  .num{color:var(--faint); font-size:12px; font-variant-numeric:tabular-nums; width:1%}
+  .nombre{font-weight:600; letter-spacing:-.01em; white-space:nowrap}
+  .con-ico{display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; white-space:nowrap}
+  .con-ico a{color:var(--muted); text-decoration:none}
+  .con-ico a:hover{color:var(--text)}
+  .con-ico svg{flex:none; opacity:.65}
+  .chip{
+    display:inline-block; padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:600;
+    background:rgba(230,57,70,.13); border:1px solid rgba(230,57,70,.3); color:var(--red-hot); white-space:nowrap;
   }
-  .clave.vacia { background: transparent; border-color: var(--card-border); color: var(--text-muted); font-weight: 400; }
+  .chip.gris{background:rgba(255,255,255,.04); border-color:var(--line); color:var(--faint); font-weight:400}
+  .fecha{color:var(--faint); font-size:12.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .vacio{padding:44px 16px; text-align:center; color:var(--faint); font-size:13.5px}
+
+  /* ── portón ── */
+  .gate{max-width:400px; margin:16vh auto 0; padding:34px 32px; text-align:center}
+  .gate .logo{height:36px; margin:0 auto 22px}
+  .gate h1{margin:0 0 6px; font-size:20px; font-weight:800; letter-spacing:-.025em}
+  .gate p{margin:0 0 20px; font-size:13px; color:var(--muted)}
+  .gate .inp{text-align:center; margin-bottom:12px; padding:14px}
+  .gate .export{width:100%; justify-content:center; padding:14px}
+  .gate-err{display:none; margin-top:12px; font-size:12.5px; color:var(--red-hot)}
+  .gate-err.show{display:block}
+
+  @media (max-width:720px){
+    .shell{padding:18px 14px 50px}
+    .tile-val{font-size:28px}
+  }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div id="gate" class="gate">
-    <h1 style="font-size:18px;">Panel de leads</h1>
-    <p style="color:var(--text-muted); font-size:13px;">Ingresá la clave de acceso al panel.</p>
-    <input type="password" id="password" placeholder="Clave del panel" />
-    <div class="error" id="gate-error">Clave incorrecta.</div>
-    <button id="btn-enter">Entrar</button>
+<div class="shell">
+
+  <div id="gate" class="card gate">
+    <img class="logo" src="/static/atv-logo.png" alt="Aumenta Tu Valor" />
+    <h1>Panel de leads</h1>
+    <p>Ingresá la clave para entrar.</p>
+    <input type="password" id="password" class="inp" placeholder="Clave del panel" autocomplete="current-password" />
+    <button class="export" id="btn-enter">Entrar</button>
+    <div class="gate-err" id="gate-err">Esa clave no es válida.</div>
   </div>
 
-  <div id="dashboard" style="display:none;">
-    <div id="view-leads">
-      <h1>Leads</h1>
-      <button class="link-btn" id="btn-ver-slugs">Ver totales por SOP →</button>
-      <div class="card"><table id="table-leads"></table></div>
+  <div id="panel" style="display:none">
+    <div class="top">
+      <img class="logo" src="/static/atv-logo.png" alt="Aumenta Tu Valor" />
+      <div class="who">
+        <button class="ghost" id="btn-reload">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Actualizar
+        </button>
+      </div>
     </div>
 
-    <div id="view-summary" style="display:none;">
-      <button class="back-btn" id="btn-back-summary">← Volver a los leads</button>
-      <h1>Leads por SOP</h1>
-      <div class="card"><table id="table-summary"></table></div>
+    <div class="tiles" id="tiles"></div>
+
+    <div class="card filters">
+      <div class="filter-grid">
+        <div class="fld search">
+          <label for="q">Buscar</label>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="top:calc(50% + 10px)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          <input class="inp" id="q" placeholder="Nombre, Instagram, teléfono o email..." />
+        </div>
+        <div class="fld">
+          <label for="f-clave">Palabra clave</label>
+          <select class="sel" id="f-clave"><option value="">Todas</option></select>
+        </div>
+        <div class="fld">
+          <label for="f-origen">Origen</label>
+          <select class="sel" id="f-origen"><option value="">Todos</option></select>
+        </div>
+        <div class="fld">
+          <label for="f-desde">Desde</label>
+          <input class="inp" id="f-desde" type="date" />
+        </div>
+        <div class="fld">
+          <label for="f-hasta">Hasta</label>
+          <input class="inp" id="f-hasta" type="date" />
+        </div>
+      </div>
+      <div class="bar">
+        <span class="bar-count"><b id="visibles">0</b> <span id="pal">leads</span></span>
+        <button class="clear" id="btn-clear">Limpiar filtros</button>
+        <button class="export" id="btn-export" style="margin-left:auto">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Exportar CSV
+        </button>
+      </div>
     </div>
 
-    <div id="view-detail" style="display:none;">
-      <button class="back-btn" id="btn-back-detail">← Volver</button>
-      <h1 id="detail-title">Detalle</h1>
-      <div class="card"><table id="table-detail"></table></div>
+    <div class="card table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="num">#</th>
+            <th>Nombre</th>
+            <th>WhatsApp</th>
+            <th>Instagram</th>
+            <th>Palabra clave</th>
+            <th>Origen</th>
+            <th>Email</th>
+            <th>Fecha</th>
+          </tr>
+        </thead>
+        <tbody id="filas"></tbody>
+      </table>
     </div>
   </div>
+
 </div>
 
 <script>
-  const API_BASE = window.location.origin;
-  let dashboardKey = '';
+  var API = window.location.origin;
+  var key = '';
+  var leads = [];
 
-  // Los leads escriben su propio nombre e Instagram: escapar antes de meterlos en el HTML.
-  function esc(v) {
-    return String(v == null ? '' : v).replace(/[&<>"']/g, c => (
-      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
-    ));
+  function esc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function soloDigitos(t){ return String(t || '').replace(/\D/g, ''); }
+  function fechaCorta(iso){
+    if (!iso) return '—';
+    var p = String(iso).split(/[- :]/);
+    return p[2] + '/' + p[1] + '  ' + (p[3] || '') + ':' + (p[4] || '');
+  }
+  function dia(iso){ return String(iso || '').slice(0, 10); }
+  function hoy(){
+    var d = new Date(), z = function(n){ return n < 10 ? '0' + n : n; };
+    return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate());
   }
 
-  document.getElementById('btn-enter').addEventListener('click', enter);
-  document.getElementById('password').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') enter();
+  // ── entrar ──
+  async function entrar(){
+    var pw = document.getElementById('password').value;
+    var res = await fetch(API + '/api/dashboard/leads?key=' + encodeURIComponent(pw));
+    if (!res.ok) { document.getElementById('gate-err').classList.add('show'); return; }
+    key = pw;
+    leads = await res.json();
+    document.getElementById('gate').style.display = 'none';
+    document.getElementById('panel').style.display = 'block';
+    llenarSelects();
+    pintar();
+  }
+  document.getElementById('btn-enter').addEventListener('click', entrar);
+  document.getElementById('password').addEventListener('keydown', function(e){ if (e.key === 'Enter') entrar(); });
+
+  async function recargar(){
+    var res = await fetch(API + '/api/dashboard/leads?key=' + encodeURIComponent(key));
+    if (res.ok) { leads = await res.json(); llenarSelects(); pintar(); }
+  }
+  document.getElementById('btn-reload').addEventListener('click', recargar);
+
+  // ── filtros ──
+  function llenarSelects(){
+    var claves = {}, origenes = {};
+    leads.forEach(function(l){
+      if (l.codigo_usado) claves[l.codigo_usado.toLowerCase()] = 1;
+      origenes[l.slug || '(directo)'] = 1;
+    });
+    var sc = document.getElementById('f-clave'), so = document.getElementById('f-origen');
+    var vc = sc.value, vo = so.value;
+    sc.innerHTML = '<option value="">Todas</option>' + Object.keys(claves).sort().map(function(c){
+      return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
+    so.innerHTML = '<option value="">Todos</option>' + Object.keys(origenes).sort().map(function(o){
+      return '<option value="' + esc(o) + '">' + esc(o) + '</option>'; }).join('');
+    sc.value = vc; so.value = vo;
+  }
+
+  function filtrados(){
+    var q = document.getElementById('q').value.trim().toLowerCase();
+    var fc = document.getElementById('f-clave').value;
+    var fo = document.getElementById('f-origen').value;
+    var fd = document.getElementById('f-desde').value;
+    var fh = document.getElementById('f-hasta').value;
+
+    return leads.filter(function(l){
+      if (fc && String(l.codigo_usado || '').toLowerCase() !== fc) return false;
+      if (fo && (l.slug || '(directo)') !== fo) return false;
+      if (fd && dia(l.created_at) < fd) return false;
+      if (fh && dia(l.created_at) > fh) return false;
+      if (q) {
+        var heno = [l.nombre, l.instagram, l.telefono, l.email].join(' ').toLowerCase();
+        if (heno.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  // ── tiles ──
+  function pintarTiles(rows){
+    var hoyStr = hoy();
+    var deHoy = leads.filter(function(l){ return dia(l.created_at) === hoyStr; }).length;
+
+    var porClave = {};
+    leads.forEach(function(l){
+      var c = (l.codigo_usado || '').toLowerCase() || '(sin clave)';
+      porClave[c] = (porClave[c] || 0) + 1;
+    });
+    var orden = Object.keys(porClave).sort(function(a, b){ return porClave[b] - porClave[a]; });
+    var top = orden[0], maxN = top ? porClave[top] : 0;
+    var origenes = {};
+    leads.forEach(function(l){ origenes[l.slug || '(directo)'] = 1; });
+
+    var ico = function(d){ return '<svg class="tile-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + d + '</svg>'; };
+
+    var h = '';
+    h += '<div class="card tile"><div class="tile-head"><span class="tile-label">Total de leads</span>' +
+         ico('<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/>') +
+         '</div><div class="tile-val">' + leads.length + '</div>' +
+         '<div class="tile-sub">' + rows.length + ' con los filtros de ahora</div></div>';
+
+    h += '<div class="card tile"><div class="tile-head"><span class="tile-label">Entraron hoy</span>' +
+         ico('<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>') +
+         '</div><div class="tile-val ' + (deHoy ? 'rojo' : '') + '">' + deHoy + '</div>' +
+         '<div class="tile-sub">' + hoyStr.split('-').reverse().join('/') + '</div></div>';
+
+    h += '<div class="card tile"><div class="tile-head"><span class="tile-label">Palabra más usada</span>' +
+         ico('<path d="M12 2 4 7v6c0 5 3.4 8.5 8 9 4.6-.5 8-4 8-9V7l-8-5Z"/>') +
+         '</div><div class="tile-val chico" style="text-transform:capitalize">' + esc(top || '—') + '</div>' +
+         '<div class="tile-sub">' + maxN + ' de ' + leads.length + ' leads</div></div>';
+
+    h += '<div class="card tile"><div class="tile-head"><span class="tile-label">Orígenes distintos</span>' +
+         ico('<circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20"/>') +
+         '</div><div class="tile-val">' + Object.keys(origenes).length + '</div>' +
+         '<div class="tile-sub">slugs de URL distintos</div></div>';
+
+    var bd = orden.slice(0, 4).map(function(c){
+      var pct = maxN ? Math.round(porClave[c] / maxN * 100) : 0;
+      return '<div class="bd-row"><span class="bd-name">' + esc(c) + '</span>' +
+             '<span class="bd-bar"><span class="bd-fill" style="width:' + pct + '%"></span></span>' +
+             '<span class="bd-num">' + porClave[c] + '</span></div>';
+    }).join('') || '<div class="tile-sub">Todavía no entró nadie.</div>';
+
+    h += '<div class="card tile" style="grid-column:span 2"><div class="tile-head"><span class="tile-label">Por palabra clave</span>' +
+         ico('<path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="13" y="8" width="3" height="10"/>') +
+         '</div><div class="breakdown">' + bd + '</div></div>';
+
+    document.getElementById('tiles').innerHTML = h;
+  }
+
+  // ── tabla ──
+  function pintar(){
+    var rows = filtrados();
+    pintarTiles(rows);
+    document.getElementById('visibles').textContent = rows.length;
+    document.getElementById('pal').textContent = rows.length === 1 ? 'lead' : 'leads';
+
+    var tb = document.getElementById('filas');
+    if (rows.length === 0) {
+      tb.innerHTML = '<tr><td colspan="8" class="vacio">' +
+        (leads.length ? 'Ningún lead coincide con esos filtros.' : 'Todavía no entró ningún lead.') + '</td></tr>';
+      return;
+    }
+
+    var wa = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.5c.1-.2.2-.3.3-.5 0-.2 0-.4 0-.5 0-.2-.7-1.6-.9-2.2-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5 4.5.7.3 1.2.5 1.7.6.7.2 1.3.2 1.8.1.6-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3ZM12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2Zm0 18.2c-1.6 0-3.2-.4-4.5-1.2l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>';
+    var ig = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="3.8"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg>';
+
+    tb.innerHTML = rows.map(function(l, n){
+      var tel = soloDigitos(l.telefono);
+      var user = String(l.instagram || '').replace(/^@/, '');
+      return '<tr>' +
+        '<td class="num">' + (rows.length - n) + '</td>' +
+        '<td class="nombre">' + esc(l.nombre || '—') + '</td>' +
+        '<td>' + (tel
+          ? '<span class="con-ico">' + wa + '<a href="https://wa.me/' + tel + '" target="_blank" rel="noopener">' + esc(l.telefono) + '</a></span>'
+          : '<span class="con-ico">—</span>') + '</td>' +
+        '<td>' + (user
+          ? '<span class="con-ico">' + ig + '<a href="https://instagram.com/' + encodeURIComponent(user) + '" target="_blank" rel="noopener">@' + esc(user) + '</a></span>'
+          : '<span class="con-ico">—</span>') + '</td>' +
+        '<td>' + (l.codigo_usado
+          ? '<span class="chip">' + esc(l.codigo_usado.toLowerCase()) + '</span>'
+          : '<span class="chip gris">sin clave</span>') + '</td>' +
+        '<td><span class="chip gris">' + esc(l.slug || '(directo)') + '</span></td>' +
+        '<td><span class="con-ico">' + esc(l.email || '—') + '</span></td>' +
+        '<td class="fecha">' + fechaCorta(l.created_at) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  ['q', 'f-clave', 'f-origen', 'f-desde', 'f-hasta'].forEach(function(id){
+    document.getElementById(id).addEventListener('input', pintar);
+  });
+  document.getElementById('btn-clear').addEventListener('click', function(){
+    ['q', 'f-clave', 'f-origen', 'f-desde', 'f-hasta'].forEach(function(id){ document.getElementById(id).value = ''; });
+    pintar();
   });
 
-  async function enter() {
-    const pw = document.getElementById('password').value;
-    const res = await fetch(`${API_BASE}/api/dashboard/summary?key=${encodeURIComponent(pw)}`);
-    if (!res.ok) {
-      document.getElementById('gate-error').classList.add('show');
-      return;
-    }
-    dashboardKey = pw;
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    renderSummary(await res.json());
-    await loadLeads();
-  }
+  // ── exportar ──
+  document.getElementById('btn-export').addEventListener('click', function(){
+    var rows = filtrados();
+    var cab = ['Nombre', 'Telefono', 'Instagram', 'Email', 'Palabra clave', 'Origen', 'Fecha'];
+    var celda = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
+    var csv = [cab.map(celda).join(',')].concat(rows.map(function(l){
+      return [l.nombre, l.telefono, l.instagram, l.email,
+              (l.codigo_usado || '').toLowerCase(), l.slug || '(directo)', l.created_at].map(celda).join(',');
+    })).join('\n');
 
-  async function loadLeads() {
-    const res = await fetch(`${API_BASE}/api/dashboard/leads?key=${encodeURIComponent(dashboardKey)}`);
-    const rows = await res.json();
-    const table = document.getElementById('table-leads');
-    if (rows.length === 0) {
-      table.innerHTML = '<tr><td class="empty">Todavía no hay leads.</td></tr>';
-      return;
-    }
-    let html = '<tr><th>Nombre</th><th>Instagram</th><th>Palabra clave</th></tr>';
-    rows.forEach(r => {
-      const clave = r.codigo_usado
-        ? `<span class="clave">${esc(r.codigo_usado.toLowerCase())}</span>`
-        : '<span class="clave vacia">sin clave</span>';
-      html += `<tr>
-        <td>${esc(r.nombre)}</td><td>${esc(r.instagram)}</td><td>${clave}</td>
-      </tr>`;
-    });
-    table.innerHTML = html;
-  }
-
-  function renderSummary(rows) {
-    const table = document.getElementById('table-summary');
-    if (rows.length === 0) {
-      table.innerHTML = '<tr><td class="empty">Todavía no hay leads.</td></tr>';
-      return;
-    }
-    let html = '<tr><th>Slug (SOP)</th><th>Total leads</th><th>Con clave usada</th></tr>';
-    rows.forEach(r => {
-      html += `<tr class="slug-row" data-slug="${esc(r.slug)}">
-        <td>${esc(r.slug)}</td><td>${r.total}</td><td>${r.con_clave}</td>
-      </tr>`;
-    });
-    table.innerHTML = html;
-    table.querySelectorAll('.slug-row').forEach(row => {
-      row.addEventListener('click', () => showDetail(row.dataset.slug));
-    });
-  }
-
-  async function showDetail(slug) {
-    const res = await fetch(`${API_BASE}/api/dashboard/leads?key=${encodeURIComponent(dashboardKey)}&slug=${encodeURIComponent(slug)}`);
-    const rows = await res.json();
-    show('view-detail');
-    document.getElementById('detail-title').textContent = `Leads — ${slug}`;
-
-    const table = document.getElementById('table-detail');
-    if (rows.length === 0) {
-      table.innerHTML = '<tr><td class="empty">Sin leads en este slug.</td></tr>';
-      return;
-    }
-    let html = '<tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Instagram</th><th>Palabra clave</th><th>Fecha</th></tr>';
-    rows.forEach(r => {
-      html += `<tr>
-        <td>${esc(r.nombre)}</td><td>${esc(r.email)}</td><td>${esc(r.telefono)}</td>
-        <td>${esc(r.instagram)}</td><td>${r.codigo_usado ? esc(r.codigo_usado.toLowerCase()) : '—'}</td><td>${esc(r.created_at)}</td>
-      </tr>`;
-    });
-    table.innerHTML = html;
-  }
-
-  function show(id) {
-    ['view-leads', 'view-summary', 'view-detail'].forEach(v => {
-      document.getElementById(v).style.display = v === id ? 'block' : 'none';
-    });
-  }
-
-  document.getElementById('btn-ver-slugs').addEventListener('click', () => show('view-summary'));
-  document.getElementById('btn-back-summary').addEventListener('click', () => show('view-leads'));
-  document.getElementById('btn-back-detail').addEventListener('click', () => show('view-summary'));
+    var url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'leads-sops-' + hoy() + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 </script>
 
 </body>

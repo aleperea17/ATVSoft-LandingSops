@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 from typing import Optional
 
@@ -20,8 +21,9 @@ app.add_middleware(
 
 STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
-# Password simple para ver el dashboard. Cambiar acá si hace falta otra.
-DASHBOARD_PASSWORD = "sops-atv-2026"
+# Clave del panel. Se puede pisar con la variable de entorno DASHBOARD_PASSWORD
+# sin tocar el código ni volver a buildear.
+DASHBOARD_PASSWORD = os.getenv("DASHBOARD_PASSWORD", "atv500k")
 
 
 @app.on_event("startup")
