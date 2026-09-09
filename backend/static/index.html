@@ -107,6 +107,21 @@
   .opt.on .box{border-color:var(--red)}
   .opt.on .box i{transform:scale(1)}
 
+  .grupo-opts{display:flex; flex-direction:column; gap:9px}
+  .check{
+    display:flex; align-items:center; gap:13px; width:100%; text-align:left; padding:13px 15px;
+    background:transparent; border:1px solid var(--line); border-radius:11px; color:var(--text);
+    font-size:14.5px; font-weight:400; line-height:1.35; cursor:pointer; transition:background .16s, border-color .16s;
+  }
+  .check:hover{background:rgba(255,255,255,.035); border-color:var(--line-2)}
+  .check .sq{
+    width:17px; height:17px; border-radius:5px; border:1px solid var(--line-2); flex:none;
+    display:flex; align-items:center; justify-content:center; transition:border-color .16s, background .16s;
+  }
+  .check .sq svg{opacity:0; transform:scale(.6); transition:opacity .16s, transform .16s}
+  .check.on{background:rgba(230,57,70,.10); border-color:rgba(230,57,70,.45); font-weight:500}
+  .check.on .sq{background:var(--red); border-color:var(--red)}
+  .check.on .sq svg{opacity:1; transform:scale(1)}
   .err{display:none; margin-top:12px; font-size:12.5px; line-height:1.45; color:var(--red-hot)}
   .err.show{display:block}
 
@@ -248,7 +263,15 @@
     { k:'atrae_clientes', t:'choice', q:'¿Estás atrayendo clientes a través de tu contenido?', o:['Sí','No'] },
     { k:'perfil', t:'choice', q:'¿Qué opción describe mejor tu perfil a día de hoy?',
       o:['Creador de contenido','Creador','Infoproductor','Experto en infoproducto / Growth Operator',
-         'Dueño de negocio','Dueño de agencia','Habilidades de alto valor','Otro'] }
+         'Dueño de negocio','Dueño de agencia','Habilidades de alto valor','Otro'] },
+    { k:'cuello', t:'multi', q:'¿Cuál es tu cuello de botella?', hint:'Podés marcar más de una.',
+      o:[
+        'No genero suficientes leads',
+        'Mis leads son de mala calidad / no califican',
+        'No tengo contenido que convierta (soy viral pero no vendo)',
+        'Dependo de anuncios y mi orgánico no funciona',
+        'No tengo métricas claras de mi negocio'
+      ] }
   ];
 
   var COUNTRY_CODES = [
@@ -291,7 +314,15 @@
     if (s.hint) h += '<p class="hint">' + s.hint + '</p>';
     h += '<div class="fields">';
 
-    if (s.t === 'name') {
+    if (s.t === 'multi') {
+      var elegidas = answers['_' + s.k] || [];
+      h += '<div class="grupo-opts">' + s.o.map(function(o){
+        return '<button type="button" class="check' + (elegidas.indexOf(o) > -1 ? ' on' : '') + '" data-o="' + esc(o) + '">' +
+          '<span class="sq"><svg width="10" height="8" viewBox="0 0 10 8" fill="none">' +
+          '<path d="M1 4l2.6 2.6L9 1.2" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+          '</svg></span>' + esc(o) + '</button>';
+      }).join('') + '</div>';
+    } else if (s.t === 'name') {
       h += '<div class="split2">' +
         '<input class="field" id="f" type="text" placeholder="Nombre" autocomplete="given-name" value="' + esc(answers._nombre || '') + '">' +
         '<input class="field" id="f2" type="text" placeholder="Apellido" autocomplete="family-name" value="' + esc(answers._apellido || '') + '">' +
@@ -332,6 +363,18 @@
       }
     }
 
+    body.querySelectorAll('.check').forEach(function(b){
+      b.addEventListener('click', function(){
+        var clave = '_' + STEPS[i].k;
+        var lista = answers[clave] || [];
+        var pos = lista.indexOf(b.dataset.o);
+        if (pos > -1) { lista.splice(pos, 1); b.classList.remove('on'); }
+        else { lista.push(b.dataset.o); b.classList.add('on'); }
+        answers[clave] = lista;
+        err.classList.remove('show');
+      });
+    });
+
     body.querySelectorAll('.opt').forEach(function(b){
       b.addEventListener('click', function(){
         answers[STEPS[i].k] = b.dataset.o;
@@ -351,6 +394,10 @@
 
     if (s.t === 'choice') {
       if (!answers[s.k]) return fail('Elegí una opción para continuar.');
+    } else if (s.t === 'multi') {
+      var elegidas = answers['_' + s.k] || [];
+      if (elegidas.length === 0) return fail('Marcá al menos una opción para continuar.');
+      answers[s.k] = elegidas.join(', ');
     } else if (s.t === 'name') {
       var nom = document.getElementById('f').value.trim();
       var ape = document.getElementById('f2').value.trim();
@@ -415,7 +462,8 @@
           email: answers.email,
           instagram: answers.instagram,
           atrae_clientes: answers.atrae_clientes,
-          perfil: answers.perfil
+          perfil: answers.perfil,
+          cuello_botella: answers.cuello
         })
       });
       if (!res.ok) { fail('No pudimos guardar tus datos. Probá de nuevo.'); return; }
@@ -451,7 +499,8 @@
       'Email: ' + (answers.email || '—'),
       'Instagram: ' + (answers.instagram || '—'),
       '¿Atrae clientes con su contenido?: ' + (answers.atrae_clientes || '—'),
-      'Perfil: ' + (answers.perfil || '—')
+      'Perfil: ' + (answers.perfil || '—'),
+      'Cuello de botella: ' + (answers.cuello || '—')
     ];
     if (slug) lineas.push('Origen: ' + slug);
     return lineas.join('\n');

@@ -408,11 +408,12 @@
   // ── exportar ──
   document.getElementById('btn-export').addEventListener('click', function(){
     var rows = filtrados();
-    var cab = ['Nombre', 'Telefono', 'Instagram', 'Email', 'Palabra clave', 'Origen', 'Fecha'];
+    var cab = ['Nombre', 'Telefono', 'Instagram', 'Email', 'Palabra clave', 'Origen', 'Atrae clientes', 'Perfil', 'Cuello de botella', 'Fecha'];
     var celda = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var csv = [cab.map(celda).join(',')].concat(rows.map(function(l){
       return [l.nombre, l.telefono, l.instagram, l.email,
-              (l.codigo_usado || '').toLowerCase(), l.slug || '(directo)', l.created_at].map(celda).join(',');
+              (l.codigo_usado || '').toLowerCase(), l.slug || '(directo)',
+              l.atrae_clientes, l.perfil, l.cuello_botella, l.created_at].map(celda).join(',');
     })).join('\n');
 
     var url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));

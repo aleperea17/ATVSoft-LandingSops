@@ -1,11 +1,11 @@
 # SOPs Landing — Aumenta Tu Valor
 
-Landing multi-paso (palabra clave + 6 preguntas) → popup con WhatsApp. Con atribución por slug de URL y panel de leads.
+Landing multi-paso (palabra clave + 7 preguntas) → popup con WhatsApp. Con atribución por slug de URL y panel de leads.
 
 ## Cómo funciona
 
 1. La misma landing se sirve en cualquier URL: `tudominio.com/`, `tudominio.com/reel-marketing-01`, `tudominio.com/lo-que-sea` — el texto después de la barra (el **slug**) queda guardado junto con el lead, para saber por cuál video/SOP entró cada persona.
-2. El visitante responde 6 preguntas (nombre y apellido en dos campos que se guardan juntos, teléfono, email, Instagram, si atrae clientes con su contenido, qué perfil lo describe mejor).
+2. El visitante responde 7 preguntas (nombre y apellido en dos campos que se guardan juntos, teléfono, email, Instagram, si atrae clientes con su contenido, qué perfil lo describe mejor y cuál es su cuello de botella — esta última admite varias respuestas).
 3. Al terminar, se guarda el lead (`POST /api/leads`) y se pide la **clave de acceso**.
 4. Las claves cargadas son **viral**, **hamburguesa**, **spotify** y **onboarding** (reutilizables, no distinguen mayúsculas/minúsculas). No se acepta ninguna otra. Si es válida, se abre el popup con el botón de WhatsApp (`https://wa.me/5491162626702`).
 
