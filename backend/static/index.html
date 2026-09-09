@@ -141,19 +141,13 @@
   .prev:hover{color:var(--text); border-color:var(--line-2)}
   .fine{margin:17px 0 0; font-size:11px; line-height:1.5; color:var(--faint); text-align:center}
 
-  .done{
-    position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; padding:24px;
-    background:rgba(6,4,4,.86); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
-  }
-  .done.show{display:flex}
-  .done .edge{max-width:470px}
-  .done .shell-card{padding:34px 30px 30px; text-align:center}
-  .seal{
-    width:52px; height:52px; margin:0 auto 20px; border-radius:15px; display:flex; align-items:center; justify-content:center;
-    background:linear-gradient(160deg, rgba(230,57,70,.22), rgba(230,57,70,.05)); border:1px solid rgba(230,57,70,.3);
-  }
+  [hidden]{display:none !important}
+  #entrega{text-align:center; animation:aparecer .42s ease both}
+  #entrega .head{text-align:left}
+  .ticks-full .tick{background:var(--red); box-shadow:0 0 10px rgba(230,57,70,.55)}
+  @keyframes aparecer{from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none}}
   .peek{
-    position:relative; margin-bottom:22px; border-radius:13px; overflow:hidden;
+    position:relative; margin-top:26px; border-radius:13px; overflow:hidden;
     aspect-ratio:16/9; border:1px solid var(--line); background:#0c0808;
   }
   .peek img{
@@ -176,12 +170,12 @@
   .peek-lock span{
     font-size:9.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.8);
   }
-  .done h2{margin:0; font-size:27px; font-weight:800; letter-spacing:-.03em; line-height:1.18}
-  .done h2 em{font-style:normal; color:var(--red-hot)}
-  .done p{margin:11px 0 0; font-size:13.5px; line-height:1.55; color:var(--muted)}
+  #entrega h2{margin:22px 0 0; font-size:27px; font-weight:800; letter-spacing:-.03em; line-height:1.18}
+  #entrega h2 em{font-style:normal; color:var(--red-hot)}
+  #entrega p{margin:11px auto 0; font-size:14px; line-height:1.55; color:var(--muted); max-width:36ch}
   .wa{
-    display:block; margin-top:24px; padding:16px 20px; border-radius:12px; text-decoration:none;
-    font-size:14.5px; font-weight:700; color:#fff; background:linear-gradient(180deg,#F02744,var(--red-deep));
+    display:block; margin-top:26px; padding:17px 22px; border-radius:13px; text-decoration:none;
+    font-size:15px; font-weight:700; color:#fff; background:linear-gradient(180deg,#F02744,var(--red-deep));
     box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 12px 34px rgba(230,57,70,.3);
   }
 
@@ -206,44 +200,49 @@
   <main class="center">
     <div class="edge">
       <div class="shell-card">
-        <div class="head">
-          <span class="micro">Solicitud de acceso</span>
-          <span class="micro count" id="count">01 / 08</span>
+
+        <div id="quiz">
+          <div class="head">
+            <span class="micro">Solicitud de acceso</span>
+            <span class="micro count" id="count">01 / 08</span>
+          </div>
+          <div class="ticks" id="ticks"></div>
+          <div id="body"></div>
+          <div class="err" id="err"></div>
+          <div class="row">
+            <button class="prev" id="prev" style="display:none" aria-label="Volver">←</button>
+            <button class="go" id="go">Continuar</button>
+          </div>
+          <p class="fine" id="fine">Tus datos quedan solo con el equipo de Aumenta Tu Valor.</p>
         </div>
-        <div class="ticks" id="ticks"></div>
-        <div id="body"></div>
-        <div class="err" id="err"></div>
-        <div class="row">
-          <button class="prev" id="prev" style="display:none" aria-label="Volver">←</button>
-          <button class="go" id="go">Continuar</button>
+
+        <div id="entrega" hidden>
+          <div class="head">
+            <span class="micro">Solicitud de acceso</span>
+            <span class="micro count">Completa</span>
+          </div>
+          <div class="ticks ticks-full"><span class="tick"></span></div>
+          <div class="peek" id="peek">
+            <img id="peek-img" src="/static/recurso.jpg" alt="" />
+            <div class="peek-veil"></div>
+            <div class="peek-lock">
+              <span class="ring">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#FF5F6D" stroke-width="2" stroke-linecap="round"/>
+                  <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="#FF5F6D" stroke-width="2"/>
+                </svg>
+              </span>
+              <span>Tu recurso te espera</span>
+            </div>
+          </div>
+          <h2>Acceso <em>confirmado</em></h2>
+          <p>Te lo mandamos por WhatsApp ahora mismo. Tocá el botón y ya lo tenés.</p>
+          <a class="wa" id="wa" href="https://wa.me/5491162626702" target="_blank" rel="noopener">Reclamá tu recurso ahora</a>
         </div>
-        <p class="fine" id="fine">Tus datos quedan solo con el equipo de Aumenta Tu Valor.</p>
+
       </div>
     </div>
   </main>
-</div>
-
-<div class="done" id="done">
-  <div class="edge">
-    <div class="shell-card">
-      <div class="peek" id="peek">
-        <img id="peek-img" src="/static/recurso.jpg" alt="" />
-        <div class="peek-veil"></div>
-        <div class="peek-lock">
-          <span class="ring">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#FF5F6D" stroke-width="2" stroke-linecap="round"/>
-              <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="#FF5F6D" stroke-width="2"/>
-            </svg>
-          </span>
-          <span>Tu recurso te espera</span>
-        </div>
-      </div>
-      <h2>Acceso <em>confirmado</em></h2>
-      <p>Te lo mandamos por WhatsApp ahora mismo. Tocá el botón y ya lo tenés.</p>
-      <a class="wa" id="wa" href="https://wa.me/5491162626702" target="_blank" rel="noopener">Reclamá tu recurso ahora</a>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -284,7 +283,8 @@
   var body = document.getElementById('body'), ticks = document.getElementById('ticks'),
       count = document.getElementById('count'), err = document.getElementById('err'),
       prev = document.getElementById('prev'), go = document.getElementById('go'),
-      fine = document.getElementById('fine'), done = document.getElementById('done');
+      fine = document.getElementById('fine'),
+      quiz = document.getElementById('quiz'), entrega = document.getElementById('entrega');
 
   function pad(n){ return n < 10 ? '0' + n : String(n); }
   function esc(v){
@@ -478,7 +478,9 @@
       if (codeData.valid) {
         document.getElementById('wa').href =
           'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(mensajeWhatsApp());
-        done.classList.add('show');
+        quiz.hidden = true;
+        entrega.hidden = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         fail('La palabra ya no es válida. Recargá la página e ingresala de nuevo.');
       }

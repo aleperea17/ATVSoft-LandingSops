@@ -147,6 +147,26 @@ def dashboard_leads(key: str = Query(...), slug: Optional[str] = None):
         return [dict(r) for r in rows]
 
 
+@app.delete("/api/dashboard/leads/{lead_id}")
+def borrar_lead(lead_id: int, key: str = Query(...)):
+    """Borra un lead del panel. No se puede deshacer."""
+    _check_dashboard_key(key)
+    with get_connection() as conn:
+        cur = conn.execute("DELETE FROM leads WHERE id = ?", (lead_id,))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Ese lead ya no existe.")
+        # el contador de usos de la clave deja de contar al lead borrado
+        conn.execute(
+            """
+            UPDATE codes SET times_used = (
+                SELECT COUNT(*) FROM leads WHERE leads.codigo_usado = codes.code
+            )
+            """
+        )
+        conn.commit()
+    return {"borrado": lead_id}
+
+
 # --- Estáticos ---
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

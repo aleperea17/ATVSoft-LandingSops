@@ -104,31 +104,45 @@
   .clear:hover{color:var(--muted)}
 
   /* ── tabla ── */
+  /* la tabla va en claro, para leerla como una planilla */
+  .tabla{background:#F6F3F3; border-color:rgba(0,0,0,.1)}
   .table-wrap{overflow-x:auto}
-  table{width:100%; border-collapse:collapse; min-width:900px}
+  table{width:100%; border-collapse:collapse; min-width:840px; color:#241B1D}
   thead th{
-    text-align:left; padding:13px 16px; font-size:9.5px; font-weight:600; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--faint); border-bottom:1px solid var(--line); white-space:nowrap;
-    background:rgba(0,0,0,.22);
+    text-align:left; padding:13px 16px; font-size:9.5px; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:#8A7B7E; border-bottom:1px solid #DCD4D5; white-space:nowrap;
+    background:#EDE8E8;
   }
-  tbody td{padding:15px 16px; border-bottom:1px solid rgba(255,255,255,.045); vertical-align:middle}
-  tbody tr{position:relative; transition:background .15s}
-  tbody tr:hover{background:rgba(230,57,70,.045)}
-  tbody tr td:first-child{border-left:2px solid transparent}
+  tbody td{padding:14px 16px; border-bottom:1px solid #E6E0E0; vertical-align:middle}
+  tbody tr{transition:background .14s}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#EFE9E9}
+  tbody tr td:first-child{border-left:3px solid transparent}
   tbody tr:hover td:first-child{border-left-color:var(--red)}
-  .num{color:var(--faint); font-size:12px; font-variant-numeric:tabular-nums; width:1%}
-  .nombre{font-weight:600; letter-spacing:-.01em; white-space:nowrap}
-  .con-ico{display:inline-flex; align-items:center; gap:8px; color:var(--muted); font-size:13px; white-space:nowrap}
-  .con-ico a{color:var(--muted); text-decoration:none}
-  .con-ico a:hover{color:var(--text)}
-  .con-ico svg{flex:none; opacity:.65}
+  .num{color:#A29497; font-size:12px; font-variant-numeric:tabular-nums; width:1%}
+  .nombre{font-weight:600; letter-spacing:-.01em; white-space:nowrap; color:#1A1214}
+  .con-ico{display:inline-flex; align-items:center; gap:8px; color:#5A4E51; font-size:13px; white-space:nowrap}
+  .con-ico a{color:#5A4E51; text-decoration:none}
+  .con-ico a:hover{color:var(--red-deep); text-decoration:underline}
+  .con-ico svg{flex:none; opacity:.55}
   .chip{
     display:inline-block; padding:4px 11px; border-radius:999px; font-size:11.5px; font-weight:600;
-    background:rgba(230,57,70,.13); border:1px solid rgba(230,57,70,.3); color:var(--red-hot); white-space:nowrap;
+    background:rgba(230,57,70,.12); border:1px solid rgba(230,57,70,.32); color:var(--red-deep); white-space:nowrap;
   }
-  .chip.gris{background:rgba(255,255,255,.04); border-color:var(--line); color:var(--faint); font-weight:400}
-  .fecha{color:var(--faint); font-size:12.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
-  .vacio{padding:44px 16px; text-align:center; color:var(--faint); font-size:13.5px}
+  .fecha{color:#8A7B7E; font-size:12.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
+  .vacio{padding:44px 16px; text-align:center; color:#8A7B7E; font-size:13.5px}
+  .borrar{
+    width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center;
+    border-radius:8px; border:1px solid transparent; background:transparent; color:#B0A2A5;
+    cursor:pointer; transition:all .14s;
+  }
+  .borrar:hover{background:rgba(230,57,70,.1); border-color:rgba(230,57,70,.32); color:var(--red-deep)}
+  .borrar.confirmar{
+    width:auto; padding:0 11px; gap:6px; font-size:11.5px; font-weight:700;
+    background:var(--red-deep); border-color:var(--red-deep); color:#fff;
+  }
+  .borrar.confirmar:hover{background:#8E0E26; color:#fff}
+  td.acciones{width:1%; text-align:right; white-space:nowrap}
 
   /* ── portón ── */
   .gate{max-width:400px; margin:16vh auto 0; padding:34px 32px; text-align:center}
@@ -184,10 +198,6 @@
           <select class="sel" id="f-clave"><option value="">Todas</option></select>
         </div>
         <div class="fld">
-          <label for="f-origen">Origen</label>
-          <select class="sel" id="f-origen"><option value="">Todos</option></select>
-        </div>
-        <div class="fld">
           <label for="f-desde">Desde</label>
           <input class="inp" id="f-desde" type="date" />
         </div>
@@ -206,7 +216,7 @@
       </div>
     </div>
 
-    <div class="card table-wrap">
+    <div class="card tabla table-wrap">
       <table>
         <thead>
           <tr>
@@ -215,9 +225,9 @@
             <th>WhatsApp</th>
             <th>Instagram</th>
             <th>Palabra clave</th>
-            <th>Origen</th>
             <th>Email</th>
             <th>Fecha</th>
+            <th></th>
           </tr>
         </thead>
         <tbody id="filas"></tbody>
@@ -238,16 +248,36 @@
     });
   }
   function soloDigitos(t){ return String(t || '').replace(/\D/g, ''); }
+
+  // La base guarda UTC sin marca de zona ("2026-09-09 21:48:00").
+  // Todo lo que se muestra o se filtra va en hora de Argentina.
+  var TZ = 'America/Argentina/Buenos_Aires';
+  var FMT = new Intl.DateTimeFormat('es-AR', {
+    timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+
+  function partes(iso){
+    if (!iso) return null;
+    var d = new Date(String(iso).replace(' ', 'T') + 'Z');
+    if (isNaN(d)) return null;
+    var o = {};
+    FMT.formatToParts(d).forEach(function(p){ o[p.type] = p.value; });
+    return o;
+  }
   function fechaCorta(iso){
-    if (!iso) return '—';
-    var p = String(iso).split(/[- :]/);
-    return p[2] + '/' + p[1] + '  ' + (p[3] || '') + ':' + (p[4] || '');
+    var p = partes(iso);
+    return p ? p.day + '/' + p.month + '  ' + p.hour + ':' + p.minute : '—';
   }
-  function dia(iso){ return String(iso || '').slice(0, 10); }
-  function hoy(){
-    var d = new Date(), z = function(n){ return n < 10 ? '0' + n : n; };
-    return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate());
+  function fechaLarga(iso){
+    var p = partes(iso);
+    return p ? p.day + '/' + p.month + '/' + p.year + ' ' + p.hour + ':' + p.minute : '';
   }
+  function dia(iso){
+    var p = partes(iso);
+    return p ? p.year + '-' + p.month + '-' + p.day : '';
+  }
+  function hoy(){ return dia(new Date().toISOString().slice(0, 19).replace('T', ' ')); }
 
   // ── entrar ──
   async function entrar(){
@@ -272,30 +302,23 @@
 
   // ── filtros ──
   function llenarSelects(){
-    var claves = {}, origenes = {};
-    leads.forEach(function(l){
-      if (l.codigo_usado) claves[l.codigo_usado.toLowerCase()] = 1;
-      origenes[l.slug || '(directo)'] = 1;
-    });
-    var sc = document.getElementById('f-clave'), so = document.getElementById('f-origen');
-    var vc = sc.value, vo = so.value;
+    var claves = {};
+    leads.forEach(function(l){ if (l.codigo_usado) claves[l.codigo_usado.toLowerCase()] = 1; });
+    var sc = document.getElementById('f-clave');
+    var vc = sc.value;
     sc.innerHTML = '<option value="">Todas</option>' + Object.keys(claves).sort().map(function(c){
       return '<option value="' + esc(c) + '">' + esc(c) + '</option>'; }).join('');
-    so.innerHTML = '<option value="">Todos</option>' + Object.keys(origenes).sort().map(function(o){
-      return '<option value="' + esc(o) + '">' + esc(o) + '</option>'; }).join('');
-    sc.value = vc; so.value = vo;
+    sc.value = vc;
   }
 
   function filtrados(){
     var q = document.getElementById('q').value.trim().toLowerCase();
     var fc = document.getElementById('f-clave').value;
-    var fo = document.getElementById('f-origen').value;
     var fd = document.getElementById('f-desde').value;
     var fh = document.getElementById('f-hasta').value;
 
     return leads.filter(function(l){
       if (fc && String(l.codigo_usado || '').toLowerCase() !== fc) return false;
-      if (fo && (l.slug || '(directo)') !== fo) return false;
       if (fd && dia(l.created_at) < fd) return false;
       if (fh && dia(l.created_at) > fh) return false;
       if (q) {
@@ -389,19 +412,64 @@
           : '<span class="con-ico">—</span>') + '</td>' +
         '<td>' + (l.codigo_usado
           ? '<span class="chip">' + esc(l.codigo_usado.toLowerCase()) + '</span>'
-          : '<span class="chip gris">sin clave</span>') + '</td>' +
-        '<td><span class="chip gris">' + esc(l.slug || '(directo)') + '</span></td>' +
+          : '<span class="con-ico">sin clave</span>') + '</td>' +
         '<td><span class="con-ico">' + esc(l.email || '—') + '</span></td>' +
         '<td class="fecha">' + fechaCorta(l.created_at) + '</td>' +
+        '<td class="acciones"><button class="borrar" data-id="' + l.id + '" title="Borrar este lead">' +
+          '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+          '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/></svg>' +
+        '</button></td>' +
       '</tr>';
     }).join('');
   }
 
-  ['q', 'f-clave', 'f-origen', 'f-desde', 'f-hasta'].forEach(function(id){
+  // ── borrar ──
+  // El primer click cambia el botón a "Borrar"; recién el segundo manda el DELETE.
+  var porBorrar = null;
+  function resetBorrar(){
+    var b = document.querySelector('.borrar.confirmar');
+    if (b) {
+      b.classList.remove('confirmar');
+      b.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
+        '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13M9 7V4h6v3"/></svg>';
+    }
+    porBorrar = null;
+  }
+
+  document.getElementById('filas').addEventListener('click', async function(e){
+    var btn = e.target.closest('.borrar');
+    if (!btn) return;
+    var id = btn.dataset.id;
+
+    if (porBorrar !== id) {
+      resetBorrar();
+      porBorrar = id;
+      btn.classList.add('confirmar');
+      btn.textContent = 'Borrar';
+      return;
+    }
+
+    btn.disabled = true;
+    var res = await fetch(API + '/api/dashboard/leads/' + id + '?key=' + encodeURIComponent(key), { method: 'DELETE' });
+    porBorrar = null;
+    if (res.ok) {
+      leads = leads.filter(function(l){ return String(l.id) !== String(id); });
+      llenarSelects();
+      pintar();
+    } else {
+      btn.disabled = false;
+      btn.textContent = 'Error';
+    }
+  });
+  document.addEventListener('click', function(e){
+    if (!e.target.closest('.borrar')) resetBorrar();
+  });
+
+  ['q', 'f-clave', 'f-desde', 'f-hasta'].forEach(function(id){
     document.getElementById(id).addEventListener('input', pintar);
   });
   document.getElementById('btn-clear').addEventListener('click', function(){
-    ['q', 'f-clave', 'f-origen', 'f-desde', 'f-hasta'].forEach(function(id){ document.getElementById(id).value = ''; });
+    ['q', 'f-clave', 'f-desde', 'f-hasta'].forEach(function(id){ document.getElementById(id).value = ''; });
     pintar();
   });
 
@@ -413,7 +481,7 @@
     var csv = [cab.map(celda).join(',')].concat(rows.map(function(l){
       return [l.nombre, l.telefono, l.instagram, l.email,
               (l.codigo_usado || '').toLowerCase(), l.slug || '(directo)',
-              l.atrae_clientes, l.perfil, l.cuello_botella, l.created_at].map(celda).join(',');
+              l.atrae_clientes, l.perfil, l.cuello_botella, fechaLarga(l.created_at)].map(celda).join(',');
     })).join('\n');
 
     var url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));

@@ -13,7 +13,9 @@ Landing multi-paso (palabra clave + 7 preguntas) → popup con WhatsApp. Con atr
 
 `tudominio.com/dashboard` — pide una clave de acceso al panel (**`atv500k`**). Se puede cambiar sin tocar el código con la variable de entorno `DASHBOARD_PASSWORD`.
 
-Muestra tarjetas con el total de leads, los de hoy, la palabra más usada y el reparto por palabra; abajo, buscador, filtros por palabra clave, origen y fechas, exportación a CSV y la tabla de leads (nombre, WhatsApp, Instagram, palabra clave, origen, email, fecha).
+Muestra tarjetas con el total de leads, los de hoy, la palabra más usada y el reparto por palabra; abajo, buscador, filtros por palabra clave y fechas, exportación a CSV y la tabla de leads (nombre, WhatsApp, Instagram, palabra clave, email, fecha), con un botón para borrar cada uno.
+
+Las fechas se guardan en UTC y se muestran en hora de Argentina, así el panel se ve igual corriendo en tu máquina o en el VPS.
 
 ## Cómo desplegar
 
