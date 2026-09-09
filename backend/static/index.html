@@ -3,588 +3,446 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/png" href="/static/favicon.png" />
+<link rel="apple-touch-icon" href="/static/favicon.png" />
 <title>Reclamá tus SOPs — Aumenta Tu Valor</title>
-<meta name="description" content="Respondé unas preguntas rápidas e ingresá tu clave para reclamar tus SOPs por WhatsApp." />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0607;
-    --bg-glow: #2a0b10;
-    --card: #140d0e;
-    --card-border: rgba(255, 255, 255, 0.08);
-    --red: #e11d3a;
-    --red-dim: #7a1322;
-    --red-soft: rgba(225, 29, 58, 0.12);
-    --text: #f5f1f0;
-    --text-muted: #9c9192;
-    --text-faint: #635a5b;
-    --input-bg: #1a1112;
-    --radius: 18px;
+  :root{
+    --card:rgba(18,18,18,.95);
+    --line:rgba(255,255,255,.07);
+    --line-2:rgba(255,255,255,.14);
+    --red:#E63946; --red-hot:#FF5F6D; --red-deep:#B21230;
+    --text:#F7F4F4; --muted:#968C8E; --faint:#5E5456;
   }
-
-  * { box-sizing: border-box; }
-
-  html, body {
-    margin: 0;
-    padding: 0;
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', -apple-system, sans-serif;
-    min-height: 100vh;
-  }
-
-  body {
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; color:var(--text); overflow-x:hidden;
+    font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    background-color:#0a0505;
     background-image:
-      radial-gradient(ellipse 900px 600px at 50% -10%, var(--bg-glow) 0%, transparent 60%),
-      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-    background-size: auto, 64px 64px, 64px 64px;
-    background-repeat: no-repeat, repeat, repeat;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px 16px;
+      radial-gradient(ellipse 115% 95% at 50% 45%, transparent 35%, rgba(0,0,0,.48) 100%),
+      radial-gradient(ellipse 85% 60% at 50% 42%, rgba(70,32,32,.36) 0%, rgba(52,22,22,.12) 45%, transparent 72%),
+      radial-gradient(ellipse 95% 75% at 50% 38%, rgba(52,22,22,.88) 0%, rgba(20,10,10,.96) 48%, #000 100%);
+    background-attachment:fixed;
+  }
+  button,input,select{font-family:inherit}
+  :focus-visible{outline:1.5px solid var(--red-hot); outline-offset:3px}
+
+  .grain{
+    position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  .wrap { width: 100%; max-width: 460px; }
+  .page{position:relative; z-index:1; min-height:100dvh; display:flex; flex-direction:column}
+  .top{padding:30px 34px}
+  .logo{height:38px; width:auto; display:block}
+  .center{flex:1; display:flex; align-items:center; justify-content:center; padding:0 20px 70px}
 
-  .logo-badge {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--red-soft);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
+  /* filo metálico + tarjeta del sistema ATV */
+  .edge{
+    width:100%; max-width:440px; padding:1px; border-radius:19px;
+    background:linear-gradient(157deg, rgba(255,255,255,.20), rgba(230,57,70,.28) 32%, rgba(255,255,255,.03) 62%, rgba(255,255,255,.09));
+    box-shadow:0 8px 40px rgba(0,0,0,.6), 0 2px 8px rgba(0,0,0,.4);
+  }
+  .shell-card{
+    position:relative; background:var(--card); border-radius:18px; overflow:hidden;
+    padding:26px 26px 24px;
+    box-shadow:0 0 0 1px rgba(230,57,70,.08) inset, inset 0 1px 0 rgba(255,255,255,.05);
+  }
+  .shell-card::before{
+    content:''; position:absolute; inset:0; border-radius:inherit; pointer-events:none; z-index:0;
+    background:radial-gradient(ellipse 80% 55% at 50% 0%, rgba(230,57,70,.07) 0%, transparent 70%);
+  }
+  .shell-card::after{
+    content:''; position:absolute; top:0; left:10%; right:10%; height:1px; pointer-events:none; z-index:2;
+    background:linear-gradient(90deg, transparent, rgba(230,57,70,.6), transparent);
+  }
+  .shell-card > *{position:relative; z-index:1}
+
+  .head{display:flex; align-items:center; justify-content:space-between; gap:14px}
+  .micro{font-size:9.5px; font-weight:500; letter-spacing:.2em; text-transform:uppercase; color:var(--faint)}
+  .count{font-variant-numeric:tabular-nums; color:var(--muted)}
+
+  .ticks{display:flex; gap:4px; margin-top:16px}
+  .tick{height:2px; flex:1; border-radius:2px; background:rgba(255,255,255,.09); transition:background .35s, box-shadow .35s}
+  .tick.done{background:rgba(230,57,70,.45)}
+  .tick.now{background:var(--red); box-shadow:0 0 10px rgba(230,57,70,.65)}
+
+  .q{margin:26px 0 0; font-size:21px; font-weight:700; letter-spacing:-.022em; line-height:1.26; text-wrap:balance}
+  .hint{margin:8px 0 0; font-size:12.5px; line-height:1.5; color:var(--faint)}
+  .fields{margin-top:20px}
+
+  .field{
+    width:100%; padding:14px 16px; background:rgba(0,0,0,.32); border:1px solid var(--line);
+    border-radius:12px; color:var(--text); font-size:15px; outline:none;
+    transition:border-color .18s, background .18s, box-shadow .18s;
+  }
+  .field::placeholder{color:var(--faint)}
+  .field:focus{border-color:rgba(230,57,70,.5); background:rgba(0,0,0,.45); box-shadow:0 0 0 3px rgba(230,57,70,.08)}
+  .phone{display:grid; grid-template-columns:106px 1fr; gap:9px}
+  select.field{appearance:none; cursor:pointer; padding-right:12px}
+  select.field option{background:#161010; color:var(--text)}
+
+  .opts{border:1px solid var(--line); border-radius:13px; overflow:hidden; background:rgba(0,0,0,.22)}
+  .opt{
+    display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:13px 15px;
+    background:transparent; border:none; border-bottom:1px solid var(--line); color:var(--text);
+    font-size:14px; font-weight:400; cursor:pointer; position:relative; transition:background .16s;
+  }
+  .opt:last-child{border-bottom:none}
+  .opt::before{content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--red); transform:scaleY(0); transition:transform .18s}
+  .opt:hover{background:rgba(255,255,255,.035)}
+  .opt .box{width:15px; height:15px; border-radius:50%; border:1px solid var(--line-2); flex:none; display:flex; align-items:center; justify-content:center; transition:border-color .16s}
+  .opt .box i{width:7px; height:7px; border-radius:50%; background:var(--red); transform:scale(0); transition:transform .18s}
+  .opt.on{background:rgba(230,57,70,.09); font-weight:500}
+  .opt.on::before{transform:scaleY(1)}
+  .opt.on .box{border-color:var(--red)}
+  .opt.on .box i{transform:scale(1)}
+
+  .err{display:none; margin-top:12px; font-size:12.5px; line-height:1.45; color:var(--red-hot)}
+  .err.show{display:block}
+
+  .row{display:flex; gap:9px; margin-top:20px}
+  .go{
+    flex:1; padding:15px 20px; border:none; border-radius:12px; font-size:14px; font-weight:700;
+    color:#fff; cursor:pointer; background:linear-gradient(180deg,#F02744,var(--red-deep));
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 10px 30px rgba(230,57,70,.26);
+    transition:transform .16s, box-shadow .16s, filter .16s;
+  }
+  .go:hover:not(:disabled){transform:translateY(-1px); filter:brightness(1.06); box-shadow:0 1px 0 rgba(255,255,255,.24) inset, 0 14px 38px rgba(230,57,70,.36)}
+  .go:disabled{opacity:.6; cursor:default}
+  .prev{
+    flex:none; padding:15px 17px; border-radius:12px; background:transparent; border:1px solid var(--line);
+    color:var(--muted); font-size:14px; cursor:pointer; transition:color .16s, border-color .16s;
+  }
+  .prev:hover{color:var(--text); border-color:var(--line-2)}
+  .fine{margin:15px 0 0; font-size:10.5px; line-height:1.5; color:var(--faint); text-align:center}
+
+  .done{
+    position:fixed; inset:0; z-index:40; display:none; align-items:center; justify-content:center; padding:24px;
+    background:rgba(6,4,4,.86); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+  }
+  .done.show{display:flex}
+  .done .edge{max-width:420px}
+  .done .shell-card{padding:34px 30px 30px; text-align:center}
+  .seal{
+    width:52px; height:52px; margin:0 auto 20px; border-radius:15px; display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(160deg, rgba(230,57,70,.22), rgba(230,57,70,.05)); border:1px solid rgba(230,57,70,.3);
+  }
+  .peek{
+    position:relative; margin-bottom:22px; border-radius:13px; overflow:hidden;
+    aspect-ratio:16/9; border:1px solid var(--line); background:#0c0808;
+  }
+  .peek img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    filter:blur(10px) saturate(.9) brightness(.9); transform:scale(1.15);
+  }
+  .peek-veil{
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,5,5,.18) 0%, rgba(10,5,5,.62) 100%);
+  }
+  .peek-lock{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:10px;
+  }
+  .peek-lock .ring{
+    width:44px; height:44px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:rgba(230,57,70,.16); border:1px solid rgba(230,57,70,.42);
+    box-shadow:0 0 26px rgba(230,57,70,.28);
+  }
+  .peek-lock span{
+    font-size:9.5px; font-weight:600; letter-spacing:.2em; text-transform:uppercase; color:rgba(255,255,255,.8);
+  }
+  .done h2{margin:0; font-size:25px; font-weight:800; letter-spacing:-.03em; line-height:1.18}
+  .done h2 em{font-style:normal; color:var(--red-hot)}
+  .done p{margin:11px 0 0; font-size:13.5px; line-height:1.55; color:var(--muted)}
+  .wa{
+    display:block; margin-top:24px; padding:16px 20px; border-radius:12px; text-decoration:none;
+    font-size:14.5px; font-weight:700; color:#fff; background:linear-gradient(180deg,#F02744,var(--red-deep));
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 12px 34px rgba(230,57,70,.3);
   }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    padding: 36px 32px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  @media (max-width:560px){
+    .top{padding:22px 20px}
+    .logo{height:32px}
+    .shell-card{padding:22px 20px 20px}
+    .center{padding-bottom:40px}
   }
-
-  .headline-block { text-align: center; margin-bottom: 24px; }
-
-  h1 {
-    font-size: 24px;
-    font-weight: 800;
-    letter-spacing: -0.01em;
-    line-height: 1.2;
-    margin: 0 0 8px;
-  }
-
-  h1 .accent { color: var(--red); }
-
-  .subhead {
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--text-muted);
-    margin: 0;
-  }
-
-  .progress-track {
-    height: 3px;
-    background: var(--card-border);
-    border-radius: 999px;
-    margin: 24px 0 10px;
-    overflow: hidden;
-  }
-
-  .progress-fill {
-    height: 100%;
-    background: var(--red);
-    border-radius: 999px;
-    transition: width 0.3s ease;
-    width: 14%;
-  }
-
-  .step-label {
-    font-size: 12px;
-    color: var(--text-faint);
-    margin-bottom: 22px;
-  }
-
-  .question {
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.3;
-    margin: 0 0 18px;
-  }
-
-  input[type="text"],
-  input[type="email"],
-  input[type="tel"] {
-    width: 100%;
-    background: var(--input-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 15px;
-    font-family: inherit;
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s ease;
-  }
-
-  input::placeholder { color: var(--text-faint); }
-  input:focus { border-color: var(--red); }
-
-  .phone-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .phone-row select {
-    flex: 0 0 118px;
-    background: var(--input-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: inherit;
-    font-size: 14px;
-    padding: 0 8px;
-  }
-
-  .phone-row input { flex: 1; }
-
-  .options { display: flex; flex-direction: column; gap: 10px; }
-
-  .option-btn {
-    width: 100%;
-    text-align: left;
-    background: var(--input-bg);
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 14.5px;
-    font-family: inherit;
-    color: var(--text);
-    cursor: pointer;
-    transition: border-color 0.15s ease, background 0.15s ease;
-  }
-
-  .option-btn:hover { border-color: rgba(225,29,58,0.4); }
-
-  .option-btn.selected {
-    border-color: var(--red);
-    background: var(--red-soft);
-  }
-
-  .error-msg {
-    font-size: 13px;
-    color: var(--red);
-    margin-top: 10px;
-    display: none;
-    line-height: 1.4;
-  }
-
-  .error-msg.show { display: block; }
-
-  .nav-row {
-    display: flex;
-    gap: 10px;
-    margin-top: 26px;
-  }
-
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    flex: 1;
-    background: var(--red);
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    padding: 14px 22px;
-    font-size: 14.5px;
-    font-weight: 700;
-    font-family: inherit;
-    cursor: pointer;
-    transition: transform 0.1s ease, background 0.15s ease;
-    text-decoration: none;
-  }
-
-  .btn:hover { background: #c81730; }
-  .btn:active { transform: scale(0.98); }
-  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-
-  .btn-back {
-    flex: 0 0 auto;
-    background: transparent;
-    border: 1px solid var(--card-border);
-    color: var(--text-muted);
-  }
-
-  .btn-back:hover { background: var(--input-bg); color: var(--text); }
-
-  .step { display: none; }
-  .step.active { display: block; animation: fadeUp 0.3s ease both; }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* Popup */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(5, 2, 2, 0.75);
-    backdrop-filter: blur(4px);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 50;
-  }
-
-  .overlay.show { display: flex; animation: overlayIn 0.2s ease; }
-
-  @keyframes overlayIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  .popup {
-    background: var(--card);
-    border: 1px solid var(--card-border);
-    border-radius: var(--radius);
-    max-width: 400px;
-    width: 100%;
-    padding: 36px 32px;
-    text-align: center;
-    animation: popupIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  @keyframes popupIn {
-    from { opacity: 0; transform: scale(0.92) translateY(8px); }
-    to { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .popup-badge {
-    width: 56px; height: 56px; border-radius: 50%;
-    background: var(--red-dim);
-    display: flex; align-items: center; justify-content: center;
-    margin: 0 auto 20px;
-  }
-
-  .popup h2 { font-size: 22px; font-weight: 900; letter-spacing: -0.01em; margin: 0 0 12px; }
-  .popup p { font-size: 14px; color: var(--text-muted); line-height: 1.5; margin: 0 0 26px; }
-
-  .btn-whatsapp { background: #1fb855; }
-  .btn-whatsapp:hover { background: #17993f; }
+  @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="logo-badge">
-    <svg width="18" height="22" viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 0L0 14H8L6 24L20 8H11L12 0Z" fill="#e11d3a"/>
-    </svg>
-  </div>
+<div class="grain"></div>
 
-  <div class="card">
-    <div class="headline-block">
-      <h1>Reclamá tus <span class="accent">SOPs gratis</span></h1>
-      <p class="subhead">Ingresá tu clave y respondé unas preguntas — te los mandamos por WhatsApp.</p>
+<div class="page">
+  <header class="top">
+    <img class="logo" src="/static/atv-logo.png" alt="Aumenta Tu Valor" />
+  </header>
+
+  <main class="center">
+    <div class="edge">
+      <div class="shell-card">
+        <div class="head">
+          <span class="micro">Solicitud de acceso</span>
+          <span class="micro count" id="count">01 / 08</span>
+        </div>
+        <div class="ticks" id="ticks"></div>
+        <div id="body"></div>
+        <div class="err" id="err"></div>
+        <div class="row">
+          <button class="prev" id="prev" style="display:none" aria-label="Volver">←</button>
+          <button class="go" id="go">Continuar</button>
+        </div>
+        <p class="fine" id="fine">Tus datos quedan solo con el equipo de Aumenta Tu Valor.</p>
+      </div>
     </div>
-
-    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:12.5%;"></div></div>
-    <div class="step-label" id="step-label">Paso 1 de 8</div>
-
-    <!-- Paso 1: clave de acceso -->
-    <form id="form-code">
-      <p class="question">Ingresá tu clave de acceso</p>
-      <input type="text" id="codigo" placeholder="Escribí tu clave" autocomplete="off" />
-      <div class="error-msg" id="error-code">Esa clave no es válida. Revisá que esté bien escrita e intentá de nuevo.</div>
-      <div class="nav-row">
-        <button type="submit" class="btn" id="btn-code">Continuar →</button>
-      </div>
-    </form>
-
-    <!-- Formulario dinámico (preguntas 2-8) -->
-    <form id="form-survey" style="display:none;">
-      <div id="question-container"></div>
-      <div class="error-msg" id="error-survey">Completá este campo para continuar.</div>
-      <div class="nav-row">
-        <button type="button" class="btn btn-back" id="btn-back">← Volver</button>
-        <button type="submit" class="btn" id="btn-next">Siguiente →</button>
-      </div>
-    </form>
-  </div>
+  </main>
 </div>
 
-<!-- Popup de éxito -->
-<div class="overlay" id="overlay">
-  <div class="popup">
-    <div class="popup-badge">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M12 0L0 14H8L6 24L20 8H11L12 0Z" fill="#e11d3a"/>
-      </svg>
+<div class="done" id="done">
+  <div class="edge">
+    <div class="shell-card">
+      <div class="peek" id="peek">
+        <img id="peek-img" src="/static/recurso.jpg" alt="" />
+        <div class="peek-veil"></div>
+        <div class="peek-lock">
+          <span class="ring">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10V7a5 5 0 0 1 10 0v3" stroke="#FF5F6D" stroke-width="2" stroke-linecap="round"/>
+              <rect x="4" y="10" width="16" height="11" rx="2.5" stroke="#FF5F6D" stroke-width="2"/>
+            </svg>
+          </span>
+          <span>Tu recurso te espera</span>
+        </div>
+      </div>
+      <h2>Acceso <em>confirmado</em></h2>
+      <p>Te lo mandamos por WhatsApp ahora mismo. Tocá el botón y ya lo tenés.</p>
+      <a class="wa" id="wa" href="https://wa.me/5491162626702" target="_blank" rel="noopener">Reclamá tu recurso ahora</a>
     </div>
-    <h2>Reclamá tus SOPs</h2>
-    <p>Tocá el botón y te los mandamos directo por WhatsApp.</p>
-    <a href="https://wa.me/5491162626702?text=Quiero%20reclamar%20mis%20SOPs" target="_blank" rel="noopener" class="btn btn-whatsapp">Reclamar por WhatsApp</a>
   </div>
 </div>
 
 <script>
-  const API_BASE = window.location.origin;
-  const slug = window.location.pathname.replace(/^\/+|\/+$/g, '');
+  var API_BASE = window.location.origin;
+  var slug = window.location.pathname.replace(/^\/+|\/+$/g, '');
 
-  const STEPS = [
-    { key: 'nombre', type: 'text', inputType: 'text', question: '¿Cuál es tu nombre completo?', placeholder: 'Tu nombre completo' },
-    { key: 'telefono', type: 'tel', question: '¿Cuál es tu número de teléfono?' },
-    { key: 'email', type: 'text', inputType: 'email', question: '¿Cuál es tu email?', placeholder: 'tu@email.com' },
-    { key: 'instagram', type: 'text', inputType: 'text', question: '¿Cuál es tu usuario de Instagram?', placeholder: '@tu_usuario' },
-    { key: 'ganando_dinero', type: 'choice', question: '¿Estás ganando dinero con tu contenido?', options: ['Sí', 'No'] },
-    { key: 'empresa_coaching', type: 'choice', question: '¿Estás dirigiendo o asociado con una empresa de coaching?', options: ['Sí', 'No'] },
-    {
-      key: 'efectivo_mensual', type: 'choice', question: '¿Cuál es tu efectivo mensual recaudado?',
-      options: [
-        'Menos de 30.000 dólares', '$30k - $50k', '$50k - $100k',
-        '$100k - $300k', '$300k - $1 millón',
-        '1 millón de dólares - 3 millones de dólares', '3 millones de dólares+',
-      ],
-    },
+  // WhatsApp del equipo: +54 9 11 6262-6702 (solo dígitos para wa.me)
+  var WHATSAPP = '5491162626702';
+
+  var STEPS = [
+    { k:'codigo', t:'text', q:'Ingresá tu palabra clave', ph:'Escribí la palabra',
+      hint:'Es la palabra que te dimos en el video.', fine:'La palabra no distingue mayúsculas.' },
+    { k:'nombre', t:'text', q:'¿Cuál es tu nombre completo?', ph:'Nombre y apellido' },
+    { k:'telefono', t:'tel', q:'¿Cuál es tu número de teléfono?', hint:'Ahí te mandamos los SOPs.' },
+    { k:'email', t:'email', q:'¿Cuál es tu email?', ph:'tu@email.com' },
+    { k:'instagram', t:'text', q:'¿Cuál es tu usuario de Instagram?', ph:'@tu_usuario' },
+    { k:'atrae_clientes', t:'choice', q:'¿Estás atrayendo clientes a través de tu contenido?', o:['Sí','No'] },
+    { k:'perfil', t:'choice', q:'¿Qué opción describe mejor tu perfil a día de hoy?',
+      o:['Creador de contenido','Creador','Infoproductor','Experto en infoproducto / Growth Operator',
+         'Dueño de negocio','Dueño de agencia','Habilidades de alto valor','Otro'] }
   ];
 
-  const TOTAL_STEPS = STEPS.length + 1; // +1 = paso de clave (primero)
-  const answers = {};
-  let current = 0;
-  let leadId = null;
-  let validatedCode = null;
-
-  const container = document.getElementById('question-container');
-  const progressFill = document.getElementById('progress-fill');
-  const stepLabel = document.getElementById('step-label');
-  const btnBack = document.getElementById('btn-back');
-  const btnNext = document.getElementById('btn-next');
-  const errorSurvey = document.getElementById('error-survey');
-  const formSurvey = document.getElementById('form-survey');
-  const formCode = document.getElementById('form-code');
-
-  const COUNTRY_CODES = [
-    { code: '+54', label: '🇦🇷 +54' },
-    { code: '+34', label: '🇪🇸 +34' },
-    { code: '+52', label: '🇲🇽 +52' },
-    { code: '+1', label: '🇺🇸 +1' },
-    { code: '+57', label: '🇨🇴 +57' },
-    { code: '+56', label: '🇨🇱 +56' },
-    { code: '+51', label: '🇵🇪 +51' },
-    { code: '+593', label: '🇪🇨 +593' },
+  var COUNTRY_CODES = [
+    ['+54','🇦🇷 +54'], ['+34','🇪🇸 +34'], ['+52','🇲🇽 +52'], ['+1','🇺🇸 +1'],
+    ['+57','🇨🇴 +57'], ['+56','🇨🇱 +56'], ['+51','🇵🇪 +51'], ['+593','🇪🇨 +593']
   ];
 
-  function setProgress(stepNumber) {
-    progressFill.style.width = `${(stepNumber / TOTAL_STEPS) * 100}%`;
-    stepLabel.textContent = `Paso ${stepNumber} de ${TOTAL_STEPS}`;
+  var i = 0, answers = {}, validatedCode = null, sending = false;
+
+  var body = document.getElementById('body'), ticks = document.getElementById('ticks'),
+      count = document.getElementById('count'), err = document.getElementById('err'),
+      prev = document.getElementById('prev'), go = document.getElementById('go'),
+      fine = document.getElementById('fine'), done = document.getElementById('done');
+
+  function pad(n){ return n < 10 ? '0' + n : String(n); }
+  function esc(v){
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
   }
 
-  function showCodeStep() {
-    formSurvey.style.display = 'none';
-    formCode.style.display = 'block';
-    setProgress(1);
+  function paintTicks(){
+    var h = '';
+    for (var n = 0; n < STEPS.length; n++){
+      h += '<span class="tick ' + (n < i ? 'done' : n === i ? 'now' : '') + '"></span>';
+    }
+    ticks.innerHTML = h;
+    count.textContent = pad(i + 1) + ' / ' + pad(STEPS.length);
   }
 
-  function showSurveyStep(index) {
-    formCode.style.display = 'none';
-    formSurvey.style.display = 'block';
-    current = index;
-    renderStep(index);
-  }
+  function render(){
+    var s = STEPS[i];
+    err.classList.remove('show');
+    paintTicks();
+    prev.style.display = i === 0 ? 'none' : 'inline-flex';
+    go.textContent = i === STEPS.length - 1 ? 'Reclamar mis SOPs' : 'Continuar';
+    fine.textContent = s.fine || 'Tus datos quedan solo con el equipo de Aumenta Tu Valor.';
 
-  function renderStep(index) {
-    errorSurvey.classList.remove('show');
-    const step = STEPS[index];
-    setProgress(index + 2); // +2 porque la clave es el paso 1
-    btnBack.style.display = 'inline-flex';
-    btnNext.textContent = index === STEPS.length - 1 ? 'Enviar →' : 'Siguiente →';
+    var h = '<h2 class="q">' + s.q + '</h2>';
+    if (s.hint) h += '<p class="hint">' + s.hint + '</p>';
+    h += '<div class="fields">';
 
-    let html = `<p class="question">${step.question}</p>`;
-
-    if (step.type === 'text') {
-      const val = answers[step.key] || '';
-      html += `<input type="${step.inputType}" id="field-${step.key}" placeholder="${step.placeholder}" value="${val}" />`;
-    } else if (step.type === 'tel') {
-      const savedCode = answers._telCode || '+54';
-      const savedNumber = answers._telNumber || '';
-      html += `<div class="phone-row">
-        <select id="field-tel-code">
-          ${COUNTRY_CODES.map(c => `<option value="${c.code}" ${c.code === savedCode ? 'selected' : ''}>${c.label}</option>`).join('')}
-        </select>
-        <input type="tel" id="field-tel-number" inputmode="numeric" placeholder="11 2345 6789" value="${savedNumber}" />
-      </div>`;
-    } else if (step.type === 'choice') {
-      html += `<div class="options">`;
-      step.options.forEach(opt => {
-        const selected = answers[step.key] === opt ? 'selected' : '';
-        html += `<button type="button" class="option-btn ${selected}" data-value="${opt}">${opt}</button>`;
-      });
-      html += `</div>`;
-    }
-
-    container.innerHTML = html;
-
-    if (step.type === 'tel') {
-      const telInput = document.getElementById('field-tel-number');
-      const onlyDigitsAndSpaces = () => {
-        telInput.value = telInput.value.replace(/[^\d\s]/g, '');
-      };
-      telInput.addEventListener('input', onlyDigitsAndSpaces);
-      telInput.addEventListener('paste', () => setTimeout(onlyDigitsAndSpaces, 0));
-    }
-
-    if (step.type === 'choice') {
-      container.querySelectorAll('.option-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          answers[step.key] = btn.dataset.value;
-          container.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          setTimeout(() => goNext(), 250);
-        });
-      });
-    }
-  }
-
-  function validateCurrent() {
-    const step = STEPS[current];
-    if (step.type === 'text') {
-      const val = document.getElementById(`field-${step.key}`).value.trim();
-      if (!val) return false;
-      answers[step.key] = val;
-      return true;
-    }
-    if (step.type === 'tel') {
-      const code = document.getElementById('field-tel-code').value;
-      const number = document.getElementById('field-tel-number').value.replace(/[^\d\s]/g, '').trim();
-      if (!number || !/\d/.test(number)) return false;
-      answers._telCode = code;
-      answers._telNumber = number;
-      answers.telefono = `${code} ${number}`;
-      return true;
-    }
-    if (step.type === 'choice') {
-      return Boolean(answers[step.key]);
-    }
-    return true;
-  }
-
-  async function goNext() {
-    if (!validateCurrent()) {
-      errorSurvey.classList.add('show');
-      return;
-    }
-    if (current < STEPS.length - 1) {
-      current += 1;
-      renderStep(current);
+    if (s.t === 'choice') {
+      h += '<div class="opts">' + s.o.map(function(o){
+        return '<button type="button" class="opt' + (answers[s.k] === o ? ' on' : '') + '" data-o="' + esc(o) + '">' +
+               '<span class="box"><i></i></span>' + esc(o) + '</button>';
+      }).join('') + '</div>';
+    } else if (s.t === 'tel') {
+      h += '<div class="phone"><select class="field" id="cc">' +
+        COUNTRY_CODES.map(function(c){
+          return '<option value="' + c[0] + '"' + ((answers._cc || '+54') === c[0] ? ' selected' : '') + '>' + c[1] + '</option>';
+        }).join('') +
+        '</select><input class="field" id="f" type="tel" inputmode="numeric" placeholder="11 2345 6789" value="' + esc(answers._num || '') + '"></div>';
     } else {
-      await submitSurvey();
+      h += '<input class="field" id="f" type="' + s.t + '" placeholder="' + esc(s.ph || '') + '" value="' + esc(answers[s.k] || '') + '">';
     }
+
+    body.innerHTML = h + '</div>';
+
+    var f = document.getElementById('f');
+    if (f) {
+      f.focus({ preventScroll: true });
+      f.addEventListener('keydown', function(e){
+        if (e.key === 'Enter') { e.preventDefault(); advance(); }
+      });
+      if (s.t === 'tel') {
+        var clean = function(){ f.value = f.value.replace(/[^\d\s]/g, ''); };
+        f.addEventListener('input', clean);
+        f.addEventListener('paste', function(){ setTimeout(clean, 0); });
+      }
+    }
+
+    body.querySelectorAll('.opt').forEach(function(b){
+      b.addEventListener('click', function(){
+        answers[STEPS[i].k] = b.dataset.o;
+        body.querySelectorAll('.opt').forEach(function(x){ x.classList.remove('on'); });
+        b.classList.add('on');
+        err.classList.remove('show');
+        setTimeout(advance, 210);
+      });
+    });
   }
 
-  document.getElementById('btn-back').addEventListener('click', () => {
-    if (current > 0) {
-      current -= 1;
-      renderStep(current);
+  function fail(m){ err.textContent = m; err.classList.add('show'); }
+
+  async function advance(){
+    if (sending) return;
+    var s = STEPS[i];
+
+    if (s.t === 'choice') {
+      if (!answers[s.k]) return fail('Elegí una opción para continuar.');
+    } else if (s.t === 'tel') {
+      var num = document.getElementById('f').value.trim();
+      if (!num) return fail('Completá tu número para continuar.');
+      answers._cc = document.getElementById('cc').value;
+      answers._num = num;
+      answers[s.k] = answers._cc + ' ' + num;
     } else {
-      showCodeStep();
+      var v = document.getElementById('f').value.trim();
+      if (!v) return fail(i === 0 ? 'Escribí tu palabra clave para continuar.' : 'Completá este campo para continuar.');
+      if (s.t === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return fail('Ese email no parece válido.');
+
+      if (i === 0) {
+        var ok = await checkCode(v);
+        if (!ok) return;
+        validatedCode = v;
+      }
+      answers[s.k] = v;
     }
-  });
 
-  formSurvey.addEventListener('submit', (e) => {
-    e.preventDefault();
-    goNext();
-  });
+    if (i === STEPS.length - 1) return submit();
+    i++; render();
+  }
 
-  async function submitSurvey() {
-    btnNext.disabled = true;
+  async function checkCode(codigo){
+    sending = true; go.disabled = true;
     try {
-      const res = await fetch(`${API_BASE}/api/leads`, {
+      var res = await fetch(API_BASE + '/api/validate-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: codigo })
+      });
+      var data = await res.json();
+      if (!data.valid) { fail('Esa palabra no es válida. Revisá que esté bien escrita.'); return false; }
+      return true;
+    } catch (e) {
+      fail('Problema de conexión. Probá de nuevo.');
+      return false;
+    } finally {
+      sending = false; go.disabled = false;
+    }
+  }
+
+  async function submit(){
+    sending = true; go.disabled = true;
+    try {
+      var res = await fetch(API_BASE + '/api/leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          slug,
+          slug: slug,
           nombre: answers.nombre,
           telefono: answers.telefono,
           email: answers.email,
           instagram: answers.instagram,
-          ganando_dinero: answers.ganando_dinero,
-          empresa_coaching: answers.empresa_coaching,
-          efectivo_mensual: answers.efectivo_mensual,
-        }),
+          atrae_clientes: answers.atrae_clientes,
+          perfil: answers.perfil
+        })
       });
-      const data = await res.json();
-      leadId = data.id;
+      if (!res.ok) { fail('No pudimos guardar tus datos. Probá de nuevo.'); return; }
+      var lead = await res.json();
 
-      // Asociar la clave ya validada al lead y mostrar el popup
-      const codeRes = await fetch(`${API_BASE}/api/validate-code`, {
+      var codeRes = await fetch(API_BASE + '/api/validate-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ lead_id: leadId, code: validatedCode }),
+        body: JSON.stringify({ lead_id: lead.id, code: validatedCode })
       });
-      const codeData = await codeRes.json();
+      var codeData = await codeRes.json();
       if (codeData.valid) {
-        document.getElementById('overlay').classList.add('show');
+        document.getElementById('wa').href =
+          'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(mensajeWhatsApp());
+        done.classList.add('show');
       } else {
-        errorSurvey.textContent = 'La clave ya no es válida. Volvé al inicio e ingresala de nuevo.';
-        errorSurvey.classList.add('show');
+        fail('La palabra ya no es válida. Recargá la página e ingresala de nuevo.');
       }
-    } catch (err) {
-      errorSurvey.textContent = 'Hubo un problema de conexión. Probá de nuevo.';
-      errorSurvey.classList.add('show');
+    } catch (e) {
+      fail('Hubo un problema de conexión. Probá de nuevo.');
     } finally {
-      btnNext.disabled = false;
+      sending = false; go.disabled = false;
     }
   }
 
-  formCode.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('btn-code');
-    const input = document.getElementById('codigo');
-    const errorEl = document.getElementById('error-code');
-    const codigo = input.value.trim();
+  function mensajeWhatsApp(){
+    var lineas = [
+      'Hola! Quiero reclamar mi recurso.',
+      '',
+      'Palabra clave: ' + (validatedCode || '—').toLowerCase(),
+      'Nombre: ' + (answers.nombre || '—'),
+      'Teléfono: ' + (answers.telefono || '—'),
+      'Email: ' + (answers.email || '—'),
+      'Instagram: ' + (answers.instagram || '—'),
+      '¿Atrae clientes con su contenido?: ' + (answers.atrae_clientes || '—'),
+      'Perfil: ' + (answers.perfil || '—')
+    ];
+    if (slug) lineas.push('Origen: ' + slug);
+    return lineas.join('\n');
+  }
 
-    errorEl.classList.remove('show');
-    if (!codigo) {
-      errorEl.textContent = 'Ingresá tu clave de acceso para continuar.';
-      errorEl.classList.add('show');
-      return;
-    }
-
-    btn.disabled = true;
-
-    try {
-      const res = await fetch(`${API_BASE}/api/validate-code`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: codigo }),
-      });
-      const data = await res.json();
-      if (data.valid) {
-        validatedCode = codigo;
-        showSurveyStep(0);
-      } else {
-        errorEl.textContent = 'Esa clave no es válida. Revisá que esté bien escrita e intentá de nuevo.';
-        errorEl.classList.add('show');
-      }
-    } catch (err) {
-      errorEl.textContent = 'Problema de conexión. Probá de nuevo.';
-      errorEl.classList.add('show');
-    } finally {
-      btn.disabled = false;
-    }
+  // Si todavía no cargaron la imagen del recurso, el popup igual funciona.
+  document.getElementById('peek-img').addEventListener('error', function(){
+    document.getElementById('peek').style.display = 'none';
   });
 
-  showCodeStep();
+  go.addEventListener('click', advance);
+  prev.addEventListener('click', function(){ if (i > 0) { i--; render(); } });
+
+  render();
 </script>
 
 </body>

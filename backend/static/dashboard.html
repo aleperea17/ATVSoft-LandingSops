@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="icon" type="image/png" href="/static/favicon.png" />
+<link rel="apple-touch-icon" href="/static/favicon.png" />
 <title>Panel — SOPs Landing</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #0a0607; --card: #140d0e; --card-border: rgba(255,255,255,0.08);
@@ -14,7 +16,7 @@
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--text);
-    font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh;
+    font-family: 'Poppins', -apple-system, sans-serif; min-height: 100vh;
     padding: 40px 20px;
   }
   .wrap { max-width: 900px; margin: 0 auto; }
@@ -47,7 +49,18 @@
   .error { color: var(--red); font-size: 13px; margin-top: 8px; display: none; }
   .error.show { display: block; }
   .back-btn { background: transparent; border: 1px solid var(--card-border); color: var(--text-muted); margin-bottom: 16px; }
+  .link-btn {
+    background: transparent; border: none; color: var(--text-muted); padding: 0;
+    font-size: 13px; font-weight: 500; margin-bottom: 4px;
+  }
+  .link-btn:hover { background: transparent; color: var(--text); }
   .empty { color: var(--text-muted); font-size: 13.5px; padding: 20px 0; }
+  .clave {
+    display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px;
+    font-weight: 600; background: rgba(225,29,58,0.12); border: 1px solid rgba(225,29,58,0.28);
+    color: #ff5f74;
+  }
+  .clave.vacia { background: transparent; border-color: var(--card-border); color: var(--text-muted); font-weight: 400; }
 </style>
 </head>
 <body>
@@ -62,7 +75,14 @@
   </div>
 
   <div id="dashboard" style="display:none;">
-    <div id="view-summary">
+    <div id="view-leads">
+      <h1>Leads</h1>
+      <button class="link-btn" id="btn-ver-slugs">Ver totales por SOP →</button>
+      <div class="card"><table id="table-leads"></table></div>
+    </div>
+
+    <div id="view-summary" style="display:none;">
+      <button class="back-btn" id="btn-back-summary">← Volver a los leads</button>
       <h1>Leads por SOP</h1>
       <div class="card"><table id="table-summary"></table></div>
     </div>
@@ -79,6 +99,13 @@
   const API_BASE = window.location.origin;
   let dashboardKey = '';
 
+  // Los leads escriben su propio nombre e Instagram: escapar antes de meterlos en el HTML.
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, c => (
+      { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+    ));
+  }
+
   document.getElementById('btn-enter').addEventListener('click', enter);
   document.getElementById('password').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') enter();
@@ -94,8 +121,28 @@
     dashboardKey = pw;
     document.getElementById('gate').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    const data = await res.json();
-    renderSummary(data);
+    renderSummary(await res.json());
+    await loadLeads();
+  }
+
+  async function loadLeads() {
+    const res = await fetch(`${API_BASE}/api/dashboard/leads?key=${encodeURIComponent(dashboardKey)}`);
+    const rows = await res.json();
+    const table = document.getElementById('table-leads');
+    if (rows.length === 0) {
+      table.innerHTML = '<tr><td class="empty">Todavía no hay leads.</td></tr>';
+      return;
+    }
+    let html = '<tr><th>Nombre</th><th>Instagram</th><th>Palabra clave</th></tr>';
+    rows.forEach(r => {
+      const clave = r.codigo_usado
+        ? `<span class="clave">${esc(r.codigo_usado.toLowerCase())}</span>`
+        : '<span class="clave vacia">sin clave</span>';
+      html += `<tr>
+        <td>${esc(r.nombre)}</td><td>${esc(r.instagram)}</td><td>${clave}</td>
+      </tr>`;
+    });
+    table.innerHTML = html;
   }
 
   function renderSummary(rows) {
@@ -106,8 +153,8 @@
     }
     let html = '<tr><th>Slug (SOP)</th><th>Total leads</th><th>Con clave usada</th></tr>';
     rows.forEach(r => {
-      html += `<tr class="slug-row" data-slug="${r.slug}">
-        <td>${r.slug}</td><td>${r.total}</td><td>${r.con_clave}</td>
+      html += `<tr class="slug-row" data-slug="${esc(r.slug)}">
+        <td>${esc(r.slug)}</td><td>${r.total}</td><td>${r.con_clave}</td>
       </tr>`;
     });
     table.innerHTML = html;
@@ -119,8 +166,7 @@
   async function showDetail(slug) {
     const res = await fetch(`${API_BASE}/api/dashboard/leads?key=${encodeURIComponent(dashboardKey)}&slug=${encodeURIComponent(slug)}`);
     const rows = await res.json();
-    document.getElementById('view-summary').style.display = 'none';
-    document.getElementById('view-detail').style.display = 'block';
+    show('view-detail');
     document.getElementById('detail-title').textContent = `Leads — ${slug}`;
 
     const table = document.getElementById('table-detail');
@@ -128,20 +174,25 @@
       table.innerHTML = '<tr><td class="empty">Sin leads en este slug.</td></tr>';
       return;
     }
-    let html = '<tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Instagram</th><th>Clave</th><th>Fecha</th></tr>';
+    let html = '<tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Instagram</th><th>Palabra clave</th><th>Fecha</th></tr>';
     rows.forEach(r => {
       html += `<tr>
-        <td>${r.nombre}</td><td>${r.email}</td><td>${r.telefono}</td>
-        <td>${r.instagram}</td><td>${r.codigo_usado || '—'}</td><td>${r.created_at}</td>
+        <td>${esc(r.nombre)}</td><td>${esc(r.email)}</td><td>${esc(r.telefono)}</td>
+        <td>${esc(r.instagram)}</td><td>${r.codigo_usado ? esc(r.codigo_usado.toLowerCase()) : '—'}</td><td>${esc(r.created_at)}</td>
       </tr>`;
     });
     table.innerHTML = html;
   }
 
-  document.getElementById('btn-back-detail').addEventListener('click', () => {
-    document.getElementById('view-detail').style.display = 'none';
-    document.getElementById('view-summary').style.display = 'block';
-  });
+  function show(id) {
+    ['view-leads', 'view-summary', 'view-detail'].forEach(v => {
+      document.getElementById(v).style.display = v === id ? 'block' : 'none';
+    });
+  }
+
+  document.getElementById('btn-ver-slugs').addEventListener('click', () => show('view-summary'));
+  document.getElementById('btn-back-summary').addEventListener('click', () => show('view-leads'));
+  document.getElementById('btn-back-detail').addEventListener('click', () => show('view-summary'));
 </script>
 
 </body>

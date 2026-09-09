@@ -35,9 +35,8 @@ class LeadIn(BaseModel):
     telefono: str
     email: EmailStr
     instagram: str
-    ganando_dinero: str
-    empresa_coaching: str
-    efectivo_mensual: str
+    atrae_clientes: str
+    perfil: str
 
 
 class LeadOut(BaseModel):
@@ -53,8 +52,8 @@ def create_lead(lead: LeadIn) -> LeadOut:
         cur = conn.execute(
             """
             INSERT INTO leads
-                (slug, nombre, telefono, email, instagram, ganando_dinero, empresa_coaching, efectivo_mensual)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                (slug, nombre, telefono, email, instagram, atrae_clientes, perfil)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
             (
                 lead.slug.strip(),
@@ -62,9 +61,8 @@ def create_lead(lead: LeadIn) -> LeadOut:
                 lead.telefono.strip(),
                 lead.email.lower().strip(),
                 lead.instagram.strip(),
-                lead.ganando_dinero.strip(),
-                lead.empresa_coaching.strip(),
-                lead.efectivo_mensual.strip(),
+                lead.atrae_clientes.strip(),
+                lead.perfil.strip(),
             ),
         )
         conn.commit()
