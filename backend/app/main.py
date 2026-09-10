@@ -147,6 +147,36 @@ def dashboard_leads(key: str = Query(...), slug: Optional[str] = None):
         return [dict(r) for r in rows]
 
 
+# Estados del seguimiento. El vacío es válido: es un lead que todavía no se tocó.
+ESTADOS = (
+    "",
+    "sin respuesta",
+    "descalificado (dq)",
+    "no interesado",
+    "agendado",
+    "follow ups (seguimiento)",
+    "pitch call negada",
+)
+
+
+class EstadoIn(BaseModel):
+    estado: str
+
+
+@app.patch("/api/dashboard/leads/{lead_id}/estado")
+def cambiar_estado(lead_id: int, payload: EstadoIn, key: str = Query(...)):
+    _check_dashboard_key(key)
+    estado = payload.estado.strip().lower()
+    if estado not in ESTADOS:
+        raise HTTPException(status_code=400, detail="Ese estado no existe.")
+    with get_connection() as conn:
+        cur = conn.execute("UPDATE leads SET estado = ? WHERE id = ?", (estado, lead_id))
+        if cur.rowcount == 0:
+            raise HTTPException(status_code=404, detail="Ese lead ya no existe.")
+        conn.commit()
+    return {"id": lead_id, "estado": estado}
+
+
 @app.delete("/api/dashboard/leads/{lead_id}")
 def borrar_lead(lead_id: int, key: str = Query(...)):
     """Borra un lead del panel. No se puede deshacer."""

@@ -55,7 +55,7 @@ def add_missing_columns(conn) -> None:
     perder lo que respondieron los leads anteriores.
     """
     existing = {row["name"] for row in conn.execute("PRAGMA table_info(leads)")}
-    for column in ("atrae_clientes", "perfil", "cuello_botella"):
+    for column in ("atrae_clientes", "perfil", "cuello_botella", "estado"):
         if column not in existing:
             conn.execute(
                 f"ALTER TABLE leads ADD COLUMN {column} TEXT NOT NULL DEFAULT ''"

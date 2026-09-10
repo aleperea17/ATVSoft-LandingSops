@@ -131,6 +131,26 @@
   }
   .fecha{color:#8A7B7E; font-size:12.5px; font-variant-numeric:tabular-nums; white-space:nowrap}
   .vacio{padding:44px 16px; text-align:center; color:#8A7B7E; font-size:13.5px}
+  .estado-sel{
+    appearance:none; cursor:pointer; width:100%; min-width:196px;
+    padding:7px 26px 7px 11px; border-radius:999px; font-family:inherit;
+    font-size:11.5px; font-weight:600; outline:none;
+    border:1px solid #D3CACB; background:#fff; color:#6B5F62;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6'%3E%3Cpath d='M1 1l3.5 3.5L8 1' stroke='%238A7B7E' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+    transition:border-color .14s, background-color .14s, color .14s;
+  }
+  .estado-sel:hover{border-color:#B6A9AB}
+  .estado-sel:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(230,57,70,.12)}
+  .estado-sel option{color:#241B1D; background:#fff; font-weight:500}
+  /* color por estado, para leer la fila de un vistazo */
+  .estado-sel[data-e="agendado"]{background-color:#E7F6EC; border-color:#9BD3AE; color:#186B36}
+  .estado-sel[data-e="follow ups (seguimiento)"]{background-color:#FDF3E2; border-color:#EBC98A; color:#8A5A11}
+  .estado-sel[data-e="sin respuesta"]{background-color:#F0ECEC; border-color:#CFC5C6; color:#6B5F62}
+  .estado-sel[data-e="no interesado"],
+  .estado-sel[data-e="pitch call negada"]{background-color:#FBECEE; border-color:#E9B5BC; color:#9E2233}
+  .estado-sel[data-e="descalificado (dq)"]{background-color:#F3EEF7; border-color:#CFC0DC; color:#6A4A85}
+  td.estado{width:1%}
   .borrar{
     width:30px; height:30px; display:inline-flex; align-items:center; justify-content:center;
     border-radius:8px; border:1px solid transparent; background:transparent; color:#B0A2A5;
@@ -226,6 +246,7 @@
             <th>Instagram</th>
             <th>Palabra clave</th>
             <th>Email</th>
+            <th>Estado</th>
             <th>Fecha</th>
             <th></th>
           </tr>
@@ -390,7 +411,7 @@
 
     var tb = document.getElementById('filas');
     if (rows.length === 0) {
-      tb.innerHTML = '<tr><td colspan="8" class="vacio">' +
+      tb.innerHTML = '<tr><td colspan="9" class="vacio">' +
         (leads.length ? 'Ningún lead coincide con esos filtros.' : 'Todavía no entró ningún lead.') + '</td></tr>';
       return;
     }
@@ -414,6 +435,7 @@
           ? '<span class="chip">' + esc(l.codigo_usado.toLowerCase()) + '</span>'
           : '<span class="con-ico">sin clave</span>') + '</td>' +
         '<td><span class="con-ico">' + esc(l.email || '—') + '</span></td>' +
+        '<td class="estado">' + selectEstado(l) + '</td>' +
         '<td class="fecha">' + fechaCorta(l.created_at) + '</td>' +
         '<td class="acciones"><button class="borrar" data-id="' + l.id + '" title="Borrar este lead">' +
           '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">' +
@@ -422,6 +444,49 @@
       '</tr>';
     }).join('');
   }
+
+  // ── estado ──
+  var ESTADOS = [
+    '',
+    'sin respuesta',
+    'descalificado (dq)',
+    'no interesado',
+    'agendado',
+    'follow ups (seguimiento)',
+    'pitch call negada'
+  ];
+
+  function selectEstado(l){
+    var actual = l.estado || '';
+    return '<select class="estado-sel" data-id="' + l.id + '" data-e="' + esc(actual) + '">' +
+      ESTADOS.map(function(e){
+        var texto = e === '' ? 'Sin estado' : e.charAt(0).toUpperCase() + e.slice(1);
+        return '<option value="' + esc(e) + '"' + (e === actual ? ' selected' : '') + '>' + esc(texto) + '</option>';
+      }).join('') + '</select>';
+  }
+
+  document.getElementById('filas').addEventListener('change', async function(e){
+    var sel = e.target.closest('.estado-sel');
+    if (!sel) return;
+    var id = sel.dataset.id, valor = sel.value, antes = sel.dataset.e;
+
+    sel.dataset.e = valor;
+    sel.disabled = true;
+    var res = await fetch(API + '/api/dashboard/leads/' + id + '/estado?key=' + encodeURIComponent(key), {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ estado: valor })
+    });
+    sel.disabled = false;
+
+    if (res.ok) {
+      leads.forEach(function(l){ if (String(l.id) === String(id)) l.estado = valor; });
+    } else {
+      // si falla, la fila vuelve a lo que estaba en vez de mentir
+      sel.value = antes;
+      sel.dataset.e = antes;
+    }
+  });
 
   // ── borrar ──
   // El primer click cambia el botón a "Borrar"; recién el segundo manda el DELETE.
@@ -476,12 +541,12 @@
   // ── exportar ──
   document.getElementById('btn-export').addEventListener('click', function(){
     var rows = filtrados();
-    var cab = ['Nombre', 'Telefono', 'Instagram', 'Email', 'Palabra clave', 'Origen', 'Atrae clientes', 'Perfil', 'Cuello de botella', 'Fecha'];
+    var cab = ['Nombre', 'Telefono', 'Instagram', 'Email', 'Palabra clave', 'Origen', 'Atrae clientes', 'Perfil', 'Cuello de botella', 'Estado', 'Fecha'];
     var celda = function(v){ return '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"'; };
     var csv = [cab.map(celda).join(',')].concat(rows.map(function(l){
       return [l.nombre, l.telefono, l.instagram, l.email,
               (l.codigo_usado || '').toLowerCase(), l.slug || '(directo)',
-              l.atrae_clientes, l.perfil, l.cuello_botella, fechaLarga(l.created_at)].map(celda).join(',');
+              l.atrae_clientes, l.perfil, l.cuello_botella, l.estado || '', fechaLarga(l.created_at)].map(celda).join(',');
     })).join('\n');
 
     var url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));

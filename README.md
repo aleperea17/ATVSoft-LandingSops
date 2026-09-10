@@ -13,7 +13,9 @@ Landing multi-paso (palabra clave + 7 preguntas) → popup con WhatsApp. Con atr
 
 `tudominio.com/dashboard` — pide una clave de acceso al panel (**`atv500k`**). Se puede cambiar sin tocar el código con la variable de entorno `DASHBOARD_PASSWORD`.
 
-Muestra tarjetas con el total de leads, los de hoy, la palabra más usada y el reparto por palabra; abajo, buscador, filtros por palabra clave y fechas, exportación a CSV y la tabla de leads (nombre, WhatsApp, Instagram, palabra clave, email, fecha), con un botón para borrar cada uno.
+Muestra tarjetas con el total de leads, los de hoy, la palabra más usada y el reparto por palabra; abajo, buscador, filtros por palabra clave y fechas, exportación a CSV y la tabla de leads (nombre, WhatsApp, Instagram, palabra clave, email, estado, fecha), con un botón para borrar cada uno.
+
+La columna **Estado** es un select por fila para seguir el contacto: sin estado, sin respuesta, descalificado (dq), no interesado, agendado, follow ups (seguimiento) y pitch call negada. Se guarda solo al elegirlo y cada estado tiene su color, para leer la fila de un vistazo. La lista vive en `ESTADOS`, en `app/main.py`.
 
 Las fechas se guardan en UTC y se muestran en hora de Argentina, así el panel se ve igual corriendo en tu máquina o en el VPS.
 
